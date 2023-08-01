@@ -19,7 +19,7 @@ namespace DashScope
         /// <returns></returns>
         public static string GetApiEndpoint(string apiVersion = "v1", string taskGroup = "aigc", string task = "text-generation", string functionCall = "generation")
         {
-            return $"{ApiBase}/{apiVersion}/{taskGroup}/{task}/{functionCall}";
+            return $"{ApiBase}/{apiVersion}/services/{taskGroup}/{task}/{functionCall}";
         }
     }
 }

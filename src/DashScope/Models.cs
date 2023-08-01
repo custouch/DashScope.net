@@ -15,9 +15,9 @@ namespace DashScope
         /// </summary>
         public const string QWenPlusV1 = "qwen-plus-v1";
 
-        public const string BailianV1 = "bailian-v1";
-        public const string Dolly12BV2 = "dolly-12b-v2";
-
-        public const string WanxV1 = "wanx-v1";
+        /// <summary>
+        /// 通用文本向量,支持中文、英语、西班牙语、法语、葡萄牙语、印尼语。
+        /// </summary>
+        public const string TextEmbeddingV1 = "text-embedding-v1";
     }
 }

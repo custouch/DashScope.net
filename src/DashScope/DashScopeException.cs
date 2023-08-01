@@ -5,12 +5,12 @@ namespace DashScope
     [Serializable]
     public class DashScopeException : Exception
     {
-        public string Code { get; set; } = "Unknown";
+        public int Code { get; set; } = -1;
 
         public DashScopeException(string message) : base(message)
         {
         }
-        public DashScopeException(string code, string message) : base(message)
+        public DashScopeException(int code, string message) : base(message)
         {
             this.Code = code;
         }
