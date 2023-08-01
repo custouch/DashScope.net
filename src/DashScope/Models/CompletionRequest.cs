@@ -3,12 +3,12 @@ using System.Collections.Generic;
 using System.Text;
 using System.Text.Json.Serialization;
 
-namespace DashScope
+namespace DashScope.Models
 {
     public class CompletionRequest
     {
         [JsonPropertyName("model")]
-        public string Model { get; set; } = Models.QWenV1;
+        public string Model { get; set; } = DashScopeModels.QWenV1;
 
         [JsonPropertyName("input")]
         public CompletionInput Input { get; set; } = new();

@@ -4,7 +4,7 @@ using System.Text;
 
 namespace DashScope
 {
-    public class Models
+    public class DashScopeModels
     {
         /// <summary>
         /// 通义千问超大规模语言模型，支持中文英文等不同语言输入。

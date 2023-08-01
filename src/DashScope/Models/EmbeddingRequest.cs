@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Text.Json.Serialization;
 
-namespace DashScope
+namespace DashScope.Models
 {
     /// <summary>
     ///  <see href="https://help.aliyun.com/document_detail/2399495.html"/>
@@ -11,7 +11,7 @@ namespace DashScope
     public class EmbeddingRequest
     {
         [JsonPropertyName("model")]
-        public string Model { get; set; } = Models.TextEmbeddingV1;
+        public string Model { get; set; } = DashScopeModels.TextEmbeddingV1;
 
         [JsonPropertyName("input")]
         public EmbeddingInput Input { get; set; } = new EmbeddingInput();
