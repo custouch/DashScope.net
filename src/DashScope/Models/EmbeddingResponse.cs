@@ -1,6 +1,6 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace DashScope
+namespace DashScope.Models
 {
     public class EmbeddingResponse : DashScopeResponse
     {
