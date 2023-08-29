@@ -1,12 +1,16 @@
-﻿using Microsoft;
+﻿using DashScope.Models;
+using Microsoft;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Net;
+using System.Net.Http;
 using System.Net.Security;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Text.Json;
 using System.Threading;
+using System.Threading.Tasks;
 
 namespace DashScope
 {
@@ -21,7 +25,6 @@ namespace DashScope
         public DashScopeClient(string apiKey, HttpClient? client = null)
         {
             this._apiKey = apiKey;
-
             this._client = client ?? DefaultHttpClientProvider.CreateClient();
         }
 
@@ -82,7 +85,7 @@ namespace DashScope
         public async Task<EmbeddingResponse> TextEmbeddingAsync(EmbeddingRequest request, CancellationToken cancellationToken = default)
         {
             var endpoint = Defaults.GetApiEndpoint(taskGroup: "embeddings", task: "text-embedding", functionCall: "text-embedding");
-            var response = await RequestAsync(request, false, endpoint, cancellationToken);
+            var response = await RequestAsync(request, endpoint: endpoint, cancellationToken: cancellationToken);
 
             var content = await response.Content.ReadAsStringAsync();
 
@@ -105,18 +108,25 @@ namespace DashScope
         /// <param name="negative_prompt"></param>
         /// <param name="model"></param>
         /// <exception cref="NotImplementedException"></exception>
+        [Obsolete("not implemented")]
         public void ImageSynthesis(string prompt, string? negative_prompt = null, string? model = null)
         {
+            //TODO: Implement The ImageSynthesis
             throw new NotImplementedException();
         }
 
 
-        private async Task<HttpResponseMessage> RequestAsync<TRequest>(TRequest requestBody, bool isStream = false, string? endpoint = null, CancellationToken cancellationToken = default)
+        private async Task<HttpResponseMessage> RequestAsync<TRequest>(TRequest requestBody, bool isStream = false, bool dataInspection = false, string? endpoint = null, CancellationToken cancellationToken = default)
         {
             var request = new HttpRequestMessage();
             if (isStream)
             {
                 request.Headers.Add("X-DashScope-SSE", "enable");
+            }
+
+            if (dataInspection)
+            {
+                request.Headers.Add("X-DashScope-DataInspection", "enable");
             }
             request.Headers.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", _apiKey);
             request.Content = new StringContent(JsonSerializer.Serialize(requestBody), Encoding.UTF8, "application/json");

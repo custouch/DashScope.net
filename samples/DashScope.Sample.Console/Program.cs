@@ -1,4 +1,5 @@
 ﻿using DashScope;
+using DashScope.Models;
 using Microsoft.Extensions.Configuration;
 
 var configuration = new ConfigurationBuilder()

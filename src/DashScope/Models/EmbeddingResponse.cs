@@ -1,14 +1,15 @@
-﻿using System.Text.Json.Serialization;
+﻿using System;
+using System.Text.Json.Serialization;
 
-namespace DashScope
+namespace DashScope.Models
 {
     public class EmbeddingResponse : DashScopeResponse
     {
         [JsonPropertyName("output")]
-        public EmbeddingOutput Output { get; set; }
+        public EmbeddingOutput Output { get; set; } = new EmbeddingOutput();
 
         [JsonPropertyName("usage")]
-        public EmbeddingUsage Usage { get; set; }
+        public EmbeddingUsage Usage { get; set; } = new EmbeddingUsage();
     }
 
     public class EmbeddingOutput

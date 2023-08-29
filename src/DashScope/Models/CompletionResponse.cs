@@ -1,24 +1,24 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace DashScope
+namespace DashScope.Models
 {
     public class CompletionResponse : DashScopeResponse
     {
         [JsonPropertyName("output")]
-        public CompletionOutput Output { get; set; }
+        public CompletionOutput Output { get; set; } = new CompletionOutput();
 
         [JsonPropertyName("usage")]
-        public CompletionUsage Usage { get; set; }
+        public CompletionUsage Usage { get; set; } = new CompletionUsage();
 
         [JsonPropertyName("finish_reason")]
-        public string FinishReason { get; set; }
+        public string FinishReason { get; set; } = string.Empty;
     }
 
 
     public class CompletionOutput
     {
         [JsonPropertyName("text")]
-        public string Text { get; set; }
+        public string Text { get; set; } = string.Empty;
     }
 
     public class CompletionUsage
