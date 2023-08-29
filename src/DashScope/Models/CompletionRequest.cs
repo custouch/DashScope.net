@@ -19,16 +19,16 @@ namespace DashScope.Models
     public class CompletionInput
     {
         [JsonPropertyName("prompt")]
-        public string Prompt { get; set; }
+        public string Prompt { get; set; } = string.Empty;
 
         [JsonPropertyName("history")]
-        public List<CompletionHistoryItem> History { get; set; }
+        public List<CompletionHistoryItem> History { get; set; } = new List<CompletionHistoryItem>();
 
     }
     public class CompletionHistoryItem
     {
-        public string User { get; set; }
-        public string Bot { get; set; }
+        public string User { get; set; } = string.Empty;
+        public string Bot { get; set; } = string.Empty;
     }
 
     public class CompletionParameters

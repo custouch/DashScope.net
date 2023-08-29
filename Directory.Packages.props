@@ -6,7 +6,7 @@
     <!--Unit Test-->
     <PackageVersion Include="Microsoft.Extensions.Configuration.UserSecrets" Version="6.0.1" />
     <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="17.1.0" />
-    <PackageVersion Include="Microsoft.SemanticKernel" Version="0.18.230725.3-preview" />
+    <PackageVersion Include="Microsoft.SemanticKernel" Version="0.21.230828.2-preview" />
     <PackageVersion Include="Microsoft.VisualStudio.Validation" Version="17.6.11" />
     <PackageVersion Include="System.Text.Json" Version="6.0.8" />
     <PackageVersion Include="xunit" Version="2.4.1" />
