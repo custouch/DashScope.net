@@ -2,5 +2,6 @@
   <!-- See https://aka.ms/dotnet/msbuild/customize for more details on customizing your build -->
   <PropertyGroup>
 	  <Version>0.1.0</Version>
+	  <LangVersion>10</LangVersion>
   </PropertyGroup>
 </Project>
