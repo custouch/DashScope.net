@@ -5,6 +5,7 @@ using Microsoft.SemanticKernel.Orchestration;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -13,10 +14,12 @@ namespace DashScope.SemanticKernel
     public class DashScopeChatResult : IChatStreamingResult, ITextStreamingResult
     {
         private readonly CompletionResponse _response;
+        private readonly int _lastTextIndex;
 
-        public DashScopeChatResult(CompletionResponse response)
+        public DashScopeChatResult(CompletionResponse response, int lastTextIndex = -1)
         {
             this._response = response;
+            this._lastTextIndex = lastTextIndex;
             this.ModelResult = new ModelResult(response);
         }
 
@@ -24,23 +27,31 @@ namespace DashScope.SemanticKernel
 
         public Task<ChatMessageBase> GetChatMessageAsync(CancellationToken cancellationToken = default)
         {
-            throw new NotImplementedException();
+            return Task.FromResult<ChatMessageBase>(new DashScopeChatMessage(AuthorRole.Assistant, _response.Output.Text));
         }
 
         public Task<string> GetCompletionAsync(CancellationToken cancellationToken = default)
         {
-            throw new NotImplementedException();
+            return Task.FromResult<string>(_response.Output.Text);
         }
 
-        public IAsyncEnumerable<string> GetCompletionStreamingAsync(CancellationToken cancellationToken = default)
+        public async IAsyncEnumerable<string> GetCompletionStreamingAsync([EnumeratorCancellation] CancellationToken cancellationToken = default)
         {
-            throw new NotImplementedException();
+            yield return _response.Output.Text.Substring(_lastTextIndex);
+            await Task.CompletedTask;
         }
 
-        public IAsyncEnumerable<ChatMessageBase> GetStreamingChatMessageAsync(CancellationToken cancellationToken = default)
+        public async IAsyncEnumerable<ChatMessageBase> GetStreamingChatMessageAsync([EnumeratorCancellation] CancellationToken cancellationToken = default)
         {
-            throw new NotImplementedException();
+            yield return new DashScopeChatMessage(AuthorRole.Assistant, _response.Output.Text.Substring(_lastTextIndex));
+            await Task.CompletedTask;
         }
 
+    }
+    public class DashScopeChatMessage : ChatMessageBase
+    {
+        public DashScopeChatMessage(AuthorRole role, string content) : base(role, content)
+        {
+        }
     }
 }
