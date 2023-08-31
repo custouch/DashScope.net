@@ -1,11 +1,11 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <RootNamespace>SK_DashScope.Sample</RootNamespace>
-    <UserSecretsId>5959471b-f1d4-4f40-ad5a-9c778de876a0</UserSecretsId>
+    <UserSecretsId>ad2543c3-dd77-45e7-adf4-b34d0abd99f9</UserSecretsId>
   </PropertyGroup>
 
   <ItemGroup>

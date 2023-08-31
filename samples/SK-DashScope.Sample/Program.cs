@@ -14,8 +14,6 @@ var configuration = new ConfigurationBuilder()
                         .AddUserSecrets(typeof(Program).Assembly)
                         .Build();
 
-var apiKey = configuration["DashScope:ApiKey"];
-
 builder.Services.AddScoped(svc =>
 {
     var kernel = Kernel.Builder.WithDashScopeCompletionService(configuration["DashScope:ApiKey"])
