@@ -6,7 +6,7 @@ using Microsoft.SemanticKernel.AI.TextCompletion;
 
 namespace Microsoft.SemanticKernel
 {
-    public static class DashScopeKernelBuilderExtentions
+    public static class DashScopeKernelBuilderExtensions
     {
         public static KernelBuilder WithDashScopeCompletionService(
             this KernelBuilder builder,
@@ -18,7 +18,6 @@ namespace Microsoft.SemanticKernel
             bool setAsDefault = false
             )
         {
-            var client = CreateDashScopeClient(apiKey, httpClient);
             model ??= DashScopeModels.QWenV1;
             var generation = new DashScopeTextCompletion(apiKey, model, httpClient);
             builder.WithAIService<IChatCompletion>(serviceId, generation, setAsDefault);

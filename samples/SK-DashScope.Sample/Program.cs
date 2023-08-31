@@ -9,15 +9,12 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-var configuration = new ConfigurationBuilder()
-                        .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
-                        .AddUserSecrets(typeof(Program).Assembly)
-                        .Build();
+
 
 builder.Services.AddScoped(svc =>
 {
-    var kernel = Kernel.Builder.WithDashScopeCompletionService(configuration["DashScope:ApiKey"])
-    .WithDashScopeTextEmbeddingGenerationService(configuration["DashScope:ApiKey"])
+    var kernel = Kernel.Builder.WithDashScopeCompletionService(builder.Configuration["DashScope:ApiKey"])
+    .WithDashScopeTextEmbeddingGenerationService(builder.Configuration["DashScope:ApiKey"])
     .Build();
     return kernel;
 });
