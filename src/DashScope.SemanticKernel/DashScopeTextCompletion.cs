@@ -2,13 +2,7 @@
 using Microsoft;
 using Microsoft.SemanticKernel.AI.ChatCompletion;
 using Microsoft.SemanticKernel.AI.TextCompletion;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading.Tasks;
-using static System.Net.Mime.MediaTypeNames;
 
 namespace DashScope.SemanticKernel
 {
@@ -64,7 +58,6 @@ namespace DashScope.SemanticKernel
             }, cancellationToken);
 
             return new List<DashScopeChatResult>() { new DashScopeChatResult(response) }.AsReadOnly();
-
         }
 
         public async IAsyncEnumerable<IChatStreamingResult> GetStreamingChatCompletionsAsync(ChatHistory chat, ChatRequestSettings? requestSettings = null, [EnumeratorCancellation] CancellationToken cancellationToken = default)
@@ -82,8 +75,9 @@ namespace DashScope.SemanticKernel
             var lastTextIndex = 0;
             await foreach (var result in responses)
             {
+                var chatResult = new DashScopeChatResult(result, lastTextIndex);
                 lastTextIndex += result.Output.Text.Length;
-                yield return new DashScopeChatResult(result);
+                yield return chatResult;
             }
         }
 
@@ -101,8 +95,9 @@ namespace DashScope.SemanticKernel
             var lastTextIndex = 0;
             await foreach (var result in responses)
             {
+                var chatResult = new DashScopeChatResult(result, lastTextIndex);
                 lastTextIndex += result.Output.Text.Length;
-                yield return new DashScopeChatResult(result);
+                yield return chatResult;
             }
         }
 
@@ -134,21 +129,19 @@ namespace DashScope.SemanticKernel
             {
                 return new CompletionParameters()
                 {
-                    TopK = (int)(settings.Temperature * 100 % 100),
+                    TopK = (int)(settings.Temperature * 100 % 100) < 1 ? 1 : (int)(settings.Temperature * 100 % 100),
                     TopP = (float)settings.TopP,
                 };
             }
         }
 
-
         private CompletionParameters ToParameters(CompleteRequestSettings settings)
         {
             return new CompletionParameters()
             {
-                TopK = (int)(settings.Temperature * 100 % 100),
+                TopK = (int)(settings.Temperature * 100 % 100) < 1 ? 1 : (int)(settings.Temperature * 100 % 100),
                 TopP = (float)settings.TopP,
             };
         }
-
     }
 }

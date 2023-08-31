@@ -22,9 +22,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DashScope.UnitTests", "test
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "samples", "samples", "{2FDFB5A9-FE06-4822-933E-5D1C6D9160C9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DashScope.Sample.Console", "samples\DashScope.Sample.Console\DashScope.Sample.Console.csproj", "{B3E7A1E3-22C3-4E26-84CF-F2ED278DD430}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DashScope.Sample.Console", "samples\DashScope.Sample.Console\DashScope.Sample.Console.csproj", "{B3E7A1E3-22C3-4E26-84CF-F2ED278DD430}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DashScope.SemanticKernel", "src\DashScope.SemanticKernel\DashScope.SemanticKernel.csproj", "{97AFD04A-8119-421D-B139-B1CC23E44A00}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DashScope.SemanticKernel", "src\DashScope.SemanticKernel\DashScope.SemanticKernel.csproj", "{97AFD04A-8119-421D-B139-B1CC23E44A00}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SK-DashScope.Sample", "samples\SK-DashScope.Sample\SK-DashScope.Sample.csproj", "{25642B93-E159-49DB-9D90-1C8E309F801C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -48,6 +50,10 @@ Global
 		{97AFD04A-8119-421D-B139-B1CC23E44A00}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{97AFD04A-8119-421D-B139-B1CC23E44A00}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{97AFD04A-8119-421D-B139-B1CC23E44A00}.Release|Any CPU.Build.0 = Release|Any CPU
+		{25642B93-E159-49DB-9D90-1C8E309F801C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{25642B93-E159-49DB-9D90-1C8E309F801C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{25642B93-E159-49DB-9D90-1C8E309F801C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{25642B93-E159-49DB-9D90-1C8E309F801C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -57,6 +63,7 @@ Global
 		{837CD31F-A2EA-4379-B325-3A20285F7577} = {ED489DAA-351A-43F9-A3DF-7DBEBF7677CD}
 		{B3E7A1E3-22C3-4E26-84CF-F2ED278DD430} = {2FDFB5A9-FE06-4822-933E-5D1C6D9160C9}
 		{97AFD04A-8119-421D-B139-B1CC23E44A00} = {BB7B834A-464F-4F81-A649-E63AA0C53C24}
+		{25642B93-E159-49DB-9D90-1C8E309F801C} = {2FDFB5A9-FE06-4822-933E-5D1C6D9160C9}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {4DB8E739-7470-4879-9DCE-E9BACBA58715}
