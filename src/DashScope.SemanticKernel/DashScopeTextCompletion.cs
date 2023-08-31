@@ -72,13 +72,8 @@ namespace DashScope.SemanticKernel
                 Parameters = ToParameters(requestSettings),
                 Model = this._model
             }, cancellationToken);
-            var lastTextIndex = 0;
-            await foreach (var result in responses)
-            {
-                var chatResult = new DashScopeChatResult(result, lastTextIndex);
-                lastTextIndex += result.Output.Text.Length;
-                yield return chatResult;
-            }
+            yield return new DashScopeChatResult(responses);
+            await Task.CompletedTask;
         }
 
         public async IAsyncEnumerable<ITextStreamingResult> GetStreamingCompletionsAsync(string text, CompleteRequestSettings requestSettings, [EnumeratorCancellation] CancellationToken cancellationToken = default)
@@ -92,13 +87,8 @@ namespace DashScope.SemanticKernel
                 Parameters = ToParameters(requestSettings),
                 Model = this._model
             }, cancellationToken);
-            var lastTextIndex = 0;
-            await foreach (var result in responses)
-            {
-                var chatResult = new DashScopeChatResult(result, lastTextIndex);
-                lastTextIndex += result.Output.Text.Length;
-                yield return chatResult;
-            }
+            yield return new DashScopeChatResult(responses);
+            await Task.CompletedTask;
         }
 
         private static IEnumerable<CompletionHistoryItem> ToHistory(IEnumerable<ChatMessageBase> history)
@@ -129,7 +119,7 @@ namespace DashScope.SemanticKernel
             {
                 return new CompletionParameters()
                 {
-                    TopK = (int)(settings.Temperature * 100 % 100) < 1 ? 1 : (int)(settings.Temperature * 100 % 100),
+                    TopK = Math.Max((int)(settings.Temperature * 100 % 100), 1),
                     TopP = (float)settings.TopP,
                 };
             }
@@ -139,7 +129,7 @@ namespace DashScope.SemanticKernel
         {
             return new CompletionParameters()
             {
-                TopK = (int)(settings.Temperature * 100 % 100) < 1 ? 1 : (int)(settings.Temperature * 100 % 100),
+                TopK = Math.Max((int)(settings.Temperature * 100 % 100), 1),
                 TopP = (float)settings.TopP,
             };
         }
