@@ -1,6 +1,6 @@
 # DashScope
 
-DashScope(���ģ�ͷ���.NET SDK
+DashScope(灵积模型服务）.NET SDK
 
 ## Install
 
