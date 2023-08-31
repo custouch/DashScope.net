@@ -4,6 +4,10 @@ DashScope(灵积模型服务) Semantic Kernel integration
 
 ## Install
 
+```
+dotnet add package DashScope.SemanticKernel --prerelease
+```
+
 ## Usage
 
 ```

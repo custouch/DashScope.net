@@ -4,6 +4,10 @@ DashScope(灵积模型服务）.NET SDK
 
 ## Install
 
+```
+dotnet add package DashScope --prerelease
+```
+
 ## Usage
 
 ```
