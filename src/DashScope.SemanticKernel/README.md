@@ -1,6 +1,6 @@
 ﻿# DashScope Semantic Kernel
 
-DashScope(灵积模型服务) Semantic Kernel 集成
+DashScope(灵积模型服务) Semantic Kernel integration
 
 ## Install
 
