@@ -26,7 +26,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DashScope.Sample.Console", 
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DashScope.SemanticKernel", "src\DashScope.SemanticKernel\DashScope.SemanticKernel.csproj", "{97AFD04A-8119-421D-B139-B1CC23E44A00}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SK-DashScope.Sample", "samples\SK-DashScope.Sample\SK-DashScope.Sample.csproj", "{25642B93-E159-49DB-9D90-1C8E309F801C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SK-DashScope.Sample", "samples\SK-DashScope.Sample\SK-DashScope.Sample.csproj", "{25642B93-E159-49DB-9D90-1C8E309F801C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
