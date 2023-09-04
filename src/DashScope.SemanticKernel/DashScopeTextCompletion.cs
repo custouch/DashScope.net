@@ -37,7 +37,7 @@ namespace DashScope.SemanticKernel
             {
                 Input = {
                     Prompt = chat.Last().Content,
-                    History = ToHistory(chat.Take(chat.Count - 1)).ToList()
+                    Messages = ChatHistoryToMessages(chat),
                 },
                 Model = this._model,
                 Parameters = ToParameters(requestSettings)
@@ -67,7 +67,7 @@ namespace DashScope.SemanticKernel
                 Input =
                 {
                     Prompt = chat.Last().Content,
-                    History = ToHistory(chat.Take(chat.Count - 1)).ToList()
+                    Messages = ChatHistoryToMessages(chat),
                 },
                 Parameters = ToParameters(requestSettings),
                 Model = this._model
@@ -89,24 +89,6 @@ namespace DashScope.SemanticKernel
             }, cancellationToken);
             yield return new DashScopeChatResult(responses);
             await Task.CompletedTask;
-        }
-
-        private static IEnumerable<CompletionHistoryItem> ToHistory(IEnumerable<ChatMessageBase> history)
-        {
-            var item = new CompletionHistoryItem();
-            foreach (var historyItem in history)
-            {
-                if (historyItem.Role == AuthorRole.User)
-                {
-                    item.User = historyItem.Content;
-                }
-                if (historyItem.Role == AuthorRole.Assistant)
-                {
-                    item.Bot = historyItem.Content;
-                    yield return item;
-                    item = new CompletionHistoryItem();
-                }
-            }
         }
 
         private static CompletionParameters ToParameters(ChatRequestSettings? settings)
@@ -132,6 +114,31 @@ namespace DashScope.SemanticKernel
                 TopK = Math.Max((int)(settings.Temperature * 100 % 100), 1),
                 TopP = (float)settings.TopP,
             };
+        }
+
+        private List<Message> ChatHistoryToMessages(ChatHistory chatHistory)
+        {
+            return chatHistory.Select(m => new Message()
+            {
+                Role = AuthorRoleToMessageRole(m.Role),
+                Content = m.Content
+            }).ToList();
+        }
+
+        private static readonly Dictionary<AuthorRole, string> AuthorRoleToMessageRoleMap = new Dictionary<AuthorRole, string>
+        {
+            { AuthorRole.User, MessageRole.User },
+            { AuthorRole.Assistant, MessageRole.Assistant },
+            { AuthorRole.System, MessageRole.System }
+        };
+
+        private string AuthorRoleToMessageRole(AuthorRole role)
+        {
+            if (AuthorRoleToMessageRoleMap.TryGetValue(role, out var messageRole))
+            {
+                return messageRole;
+            }
+            return MessageRole.User;
         }
     }
 }
