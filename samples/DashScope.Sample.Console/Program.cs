@@ -28,7 +28,14 @@ while (true)
     {
         Input =
         {
-             Prompt = userInput
+             Messages = new List<Message>()
+             {
+                  new Message()
+                  {
+                       Role = "user",
+                       Content = userInput
+                  }
+             }
         }
     });
     Console.WriteLine(result.Output.Text);

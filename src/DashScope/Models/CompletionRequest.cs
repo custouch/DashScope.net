@@ -18,11 +18,9 @@ namespace DashScope.Models
     }
     public class CompletionInput
     {
-        [JsonPropertyName("prompt")]
-        public string Prompt { get; set; } = string.Empty;
-
-        [JsonPropertyName("history")]
-        public List<CompletionHistoryItem> History { get; set; } = new List<CompletionHistoryItem>();
+        [JsonPropertyName("messages")]
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+        public List<Message> Messages { get; set; } = new List<Message>();
 
     }
     public class CompletionHistoryItem
@@ -49,7 +47,7 @@ namespace DashScope.Models
         /// 生成时，随机数的种子，用于控制模型生成的随机性。如果使用相同的种子，每次运行生成的结果都将相同；当需要复现模型的生成结果时，可以使用相同的种子。
         /// </summary>
         [JsonPropertyName("seed")]
-        public long? Seed { get; set; } = 1234;
+        public long? Seed { get; set; }
 
         /// <summary>
         /// 生成时，是否参考夸克搜索的结果。
@@ -61,5 +59,24 @@ namespace DashScope.Models
         /// </summary>
         [JsonIgnore]
         public bool? DataInspection { get; set; }
+
+        [JsonPropertyName("result_format")]
+        public string? ResultFormat { get; set; } = "text";
+    }
+
+    public class Message
+    {
+        [JsonPropertyName("role")]
+        public string Role { get; set; } = string.Empty;
+
+        [JsonPropertyName("content")]
+        public string Content { get; set; } = string.Empty;
+    }
+
+    public static class MessageRole
+    {
+        public const string User = "user";
+        public const string Assistant = "assistant";
+        public const string System = "system";
     }
 }
