@@ -28,7 +28,12 @@ namespace DashScope.SemanticKernel
         /// <returns></returns>
         public ChatHistory CreateNewChat(string? instructions = null)
         {
-            return new ChatHistory();
+            var history = new ChatHistory();
+            if (!string.IsNullOrWhiteSpace(instructions))
+            {
+                history.AddSystemMessage(instructions);
+            }
+            return history;
         }
 
         public async Task<IReadOnlyList<IChatResult>> GetChatCompletionsAsync(ChatHistory chat, ChatRequestSettings? requestSettings = null, CancellationToken cancellationToken = default)
@@ -36,7 +41,6 @@ namespace DashScope.SemanticKernel
             var response = await _client.GenerationAsync(new CompletionRequest()
             {
                 Input = {
-                    Prompt = chat.Last().Content,
                     Messages = ChatHistoryToMessages(chat),
                 },
                 Model = this._model,
@@ -51,7 +55,14 @@ namespace DashScope.SemanticKernel
             var response = await _client.GenerationAsync(new CompletionRequest()
             {
                 Input = {
-                    Prompt = text,
+                    Messages = new List<Message>()
+                    {
+                        new Message()
+                        {
+                            Role = MessageRole.User,
+                            Content = text
+                        }
+                    }
                 },
                 Model = this._model,
                 Parameters = ToParameters(requestSettings)
@@ -66,7 +77,6 @@ namespace DashScope.SemanticKernel
             {
                 Input =
                 {
-                    Prompt = chat.Last().Content,
                     Messages = ChatHistoryToMessages(chat),
                 },
                 Parameters = ToParameters(requestSettings),
@@ -82,7 +92,14 @@ namespace DashScope.SemanticKernel
             {
                 Input =
                 {
-                    Prompt = text,
+                    Messages = new List<Message>()
+                    {
+                        new Message()
+                        {
+                            Role = MessageRole.User,
+                            Content = text
+                        }
+                    }
                 },
                 Parameters = ToParameters(requestSettings),
                 Model = this._model
