@@ -5,6 +5,7 @@ using Microsoft.SemanticKernel.AI.Embeddings;
 using Microsoft.SemanticKernel.AI.TextCompletion;
 using SK_DashScope.Sample.Models;
 using System.Text;
+using Microsoft.SemanticKernel.AI;
 
 namespace SK_DashScope.Sample.Controllers
 {
@@ -44,7 +45,17 @@ namespace SK_DashScope.Sample.Controllers
             }
 
             var completion = kernel.GetService<ITextCompletion>();
-            var result = await completion.GetCompletionsAsync(input.Text, new CompleteRequestSettings { TopP = 0.8 }, cancellationToken);
+            // CompleteRequestSettings 已经被弃用且删除，新版改用 AIRequestSettings
+            // 自定义参数在属性ExtensionData里
+            var settings = new AIRequestSettings
+            {
+                ExtensionData = new Dictionary<string, object>
+                {
+                    { "top_p", 0.8 }
+                }
+            };
+            var result = await completion.GetCompletionsAsync(input.Text, settings, cancellationToken);
+
             var text = await result.First().GetCompletionAsync();
             return Ok(text);
         }

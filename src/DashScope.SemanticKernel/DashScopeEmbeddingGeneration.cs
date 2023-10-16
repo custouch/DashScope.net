@@ -1,7 +1,7 @@
 ﻿using DashScope;
 using Microsoft;
-using Microsoft.SemanticKernel.AI;
 using Microsoft.SemanticKernel.AI.Embeddings;
+using Microsoft.SemanticKernel.Diagnostics;
 
 public class DashScopeEmbeddingGeneration : ITextEmbeddingGeneration
 {
@@ -35,7 +35,11 @@ public class DashScopeEmbeddingGeneration : ITextEmbeddingGeneration
         }
         catch (DashScopeException ex)
         {
-            throw new AIException(AIException.ErrorCodes.ServiceError, ex.Message, ex);
+            // 新版已弃用且删除 AIException
+            // 改用 SKException 和 HttpOperationException
+            // 详见 https://github.com/microsoft/semantic-kernel/issues/1669
+            // part8 与 part9
+            throw new SKException(ex.Message, ex);
         }
     }
 }
