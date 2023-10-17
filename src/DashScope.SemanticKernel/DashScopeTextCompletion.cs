@@ -39,13 +39,15 @@ namespace DashScope.SemanticKernel
 
         public async Task<IReadOnlyList<IChatResult>> GetChatCompletionsAsync(ChatHistory chat, AIRequestSettings? requestSettings = null, CancellationToken cancellationToken = default)
         {
+            var settings = DashScopeAIRequestSettings.FromRequestSettings(requestSettings);
+            
             var response = await _client.GenerationAsync(new CompletionRequest()
             {
                 Input = {
                     Messages = ChatHistoryToMessages(chat),
                 },
                 Model = this._model,
-                Parameters = ToParameters(requestSettings)
+                Parameters = ToParameters(settings)
             }, cancellationToken);
 
             return new List<DashScopeChatResult>() { new DashScopeChatResult(response) }.AsReadOnly();
@@ -53,6 +55,8 @@ namespace DashScope.SemanticKernel
 
         public async Task<IReadOnlyList<ITextResult>> GetCompletionsAsync(string text, AIRequestSettings? requestSettings, CancellationToken cancellationToken = default)
         {
+            var settings = DashScopeAIRequestSettings.FromRequestSettings(requestSettings);
+            
             var response = await _client.GenerationAsync(new CompletionRequest()
             {
                 Input = {
@@ -66,7 +70,7 @@ namespace DashScope.SemanticKernel
                     }
                 },
                 Model = this._model,
-                Parameters = ToParameters(requestSettings)
+                Parameters = ToParameters(settings)
             }, cancellationToken);
 
             return new List<DashScopeChatResult>() { new DashScopeChatResult(response) }.AsReadOnly();
@@ -74,21 +78,26 @@ namespace DashScope.SemanticKernel
 
         public async IAsyncEnumerable<IChatStreamingResult> GetStreamingChatCompletionsAsync(ChatHistory chat, AIRequestSettings? requestSettings = null, [EnumeratorCancellation] CancellationToken cancellationToken = default)
         {
+            var settings = DashScopeAIRequestSettings.FromRequestSettings(requestSettings);
+            
             var responses = _client.GenerationStreamAsync(new CompletionRequest()
             {
                 Input =
                 {
                     Messages = ChatHistoryToMessages(chat),
                 },
-                Parameters = ToParameters(requestSettings),
+                Parameters = ToParameters(settings),
                 Model = this._model
             }, cancellationToken);
+            
             yield return new DashScopeChatResult(responses);
             await Task.CompletedTask;
         }
 
         public async IAsyncEnumerable<ITextStreamingResult> GetStreamingCompletionsAsync(string text, AIRequestSettings? requestSettings, [EnumeratorCancellation] CancellationToken cancellationToken = default)
         {
+            var settings = DashScopeAIRequestSettings.FromRequestSettings(requestSettings);
+            
             var responses = _client.GenerationStreamAsync(new CompletionRequest()
             {
                 Input =
@@ -102,14 +111,15 @@ namespace DashScope.SemanticKernel
                         }
                     }
                 },
-                Parameters = ToParameters(requestSettings),
+                Parameters = ToParameters(settings),
                 Model = this._model
             }, cancellationToken);
+            
             yield return new DashScopeChatResult(responses);
             await Task.CompletedTask;
         }
 
-        private static CompletionParameters ToParameters(AIRequestSettings? settings)
+        private static CompletionParameters ToParameters(DashScopeAIRequestSettings? settings)
         {
             if (settings == null)
             {
@@ -117,21 +127,16 @@ namespace DashScope.SemanticKernel
             }
             else
             {
-                // 因为新版已弃用且删除 ChatRequestSettings，统一改用AIRequestSettings
-                // 需要自己从 ExtensionData 里通过 key 取数据
-                // 而不是像以前一样通过属性访问
-                var parameters = new CompletionParameters();
+                var parameters = new CompletionParameters()
+                {
+                    TopP = settings.TopP
+                };
                 
-                if (settings.ExtensionData.TryGetValue("temperature", out object temperature))
+                if (settings.Temperature != null)
                 {
-                    parameters.TopK = Math.Max((int)((double)temperature * 100 % 100), 1);
+                    parameters.TopK = Math.Max((int)(settings.Temperature * 100 % 100), 1);
                 }
-
-                if (settings.ExtensionData.TryGetValue("top_p", out object topP))
-                {
-                    parameters.TopP = (float)(double)topP;
-                }
-
+                
                 return parameters;
             }
         }
