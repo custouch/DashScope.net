@@ -125,20 +125,17 @@ namespace DashScope.SemanticKernel
             {
                 return new CompletionParameters();
             }
-            else
+
+            return new CompletionParameters()
             {
-                var parameters = new CompletionParameters()
-                {
-                    TopP = settings.TopP
-                };
-                
-                if (settings.Temperature != null)
-                {
-                    parameters.TopK = Math.Max((int)(settings.Temperature * 100 % 100), 1);
-                }
-                
-                return parameters;
-            }
+                TopP = settings.TopP,
+                Temperature = settings.Temperature,
+                TopK = settings.TopK,
+                Seed = settings.Seed,
+                IncrementalOutput = settings.IncrementalOutput,
+                EnableSearch = settings.EnableSearch,
+                ResultFormat = settings.ResultFormat
+            };
         }
 
         private List<Message> ChatHistoryToMessages(ChatHistory chatHistory)

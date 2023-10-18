@@ -50,9 +50,9 @@ namespace DashScope
         {
             var response = await RequestAsync(request, true, cancellationToken: cancellationToken);
 
-            using var stream = await response.Content.ReadAsStreamAsync();
+            await using var stream = await response.Content.ReadAsStreamAsync();
             using var reader = new StreamReader(stream);
-            var lastTextIndex = -1;
+            
             while (!reader.EndOfStream)
             {
                 cancellationToken.ThrowIfCancellationRequested();
@@ -63,8 +63,6 @@ namespace DashScope
                 {
                     var data = RemovePrefix(line, "data:");
                     var result = JsonSerializer.Deserialize<CompletionResponse>(data)!;
-                    result.Output.Text = result.Output.Text.Substring(lastTextIndex + 1);
-                    lastTextIndex += result.Output.Text.Length;
                     yield return result;
                 }
             }
