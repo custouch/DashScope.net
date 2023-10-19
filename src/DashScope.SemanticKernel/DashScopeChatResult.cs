@@ -32,19 +32,42 @@ namespace DashScope.SemanticKernel
 
         public Task<ChatMessageBase> GetChatMessageAsync(CancellationToken cancellationToken = default)
         {
-            return Task.FromResult<ChatMessageBase>(new DashScopeChatMessage(AuthorRole.Assistant, _response!.Output.Text));
+            if (_response!.IsTextResponse)
+            {
+                return Task.FromResult<ChatMessageBase>(new DashScopeChatMessage(AuthorRole.Assistant, _response!.Output.Text!));
+            }
+            else
+            {
+                Message message = _response!.Output.Choices![0].Message;
+                return Task.FromResult<ChatMessageBase>(new DashScopeChatMessage(AuthorRole.Assistant, message.Content));
+            }
         }
 
         public Task<string> GetCompletionAsync(CancellationToken cancellationToken = default)
         {
-            return Task.FromResult<string>(_response!.Output.Text);
+            if (_response!.IsTextResponse)
+            {
+                return Task.FromResult<string>(_response!.Output.Text!);
+            }
+            else
+            {
+                Message message = _response!.Output.Choices![0].Message;
+                return Task.FromResult<string>(message.Content);
+            }
         }
 
         public async IAsyncEnumerable<string> GetCompletionStreamingAsync([EnumeratorCancellation] CancellationToken cancellationToken = default)
         {
             await foreach (var response in responses!)
             {
-                yield return response.Output.Text;
+                if (response.IsTextResponse)
+                {
+                    yield return response.Output.Text!;
+                }
+                else
+                {
+                    yield return response.Output.Choices![0].Message.Content;
+                }
             }
         }
 
@@ -52,7 +75,15 @@ namespace DashScope.SemanticKernel
         {
             await foreach (var response in responses!)
             {
-                yield return new DashScopeChatMessage(AuthorRole.Assistant, response.Output.Text);
+                if (response.IsTextResponse)
+                { 
+                    yield return new DashScopeChatMessage(AuthorRole.Assistant, response.Output.Text!);
+                }
+                else
+                {
+                    Message message = response.Output.Choices![0].Message;
+                    yield return new DashScopeChatMessage(AuthorRole.Assistant, message.Content);
+                }
             }
         }
 

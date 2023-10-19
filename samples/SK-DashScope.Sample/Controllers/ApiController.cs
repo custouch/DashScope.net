@@ -131,6 +131,7 @@ namespace SK_DashScope.Sample.Controllers
             var text = await result.First().GetCompletionAsync(cancellationToken);
             return Ok(text);
         }
+        
         [HttpPost("text_stream_with_settings")]
         public async Task TextStreamWithDashScopeSettingsAsync([FromBody] UserInput input, CancellationToken cancellationToken)
         {
@@ -159,6 +160,31 @@ namespace SK_DashScope.Sample.Controllers
             }
 
             await Response.CompleteAsync();
+        }
+        
+        [HttpPost("text_with_message_format")]
+        public async Task<IActionResult> TextWithMessageFormatAsync([FromBody] UserInput input, CancellationToken cancellationToken)
+        {
+            if (string.IsNullOrWhiteSpace(input.Text))
+            {
+                return NoContent();
+            }
+
+            var completion = kernel.GetService<ITextCompletion>();
+            var settings = new DashScopeAIRequestSettings()
+            {
+                TopP = 0.5f,
+                TopK = 0,
+                Seed = 1234,
+                Temperature = 0.5f,
+                IncrementalOutput = false,
+                EnableSearch = true,
+                ResultFormat = "message"
+            };
+            var result = await completion.GetCompletionsAsync(input.Text, settings, cancellationToken);
+
+            var text = await result[0].GetCompletionAsync(cancellationToken);
+            return Ok(text);
         }
     }
 }
