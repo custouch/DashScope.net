@@ -19,5 +19,6 @@ var DScopeClient = new DashScopeClient(apiKey, client);
 
 ## Features
 
-- [x] qwen-v1
+- [x] qwen-turbo
+- [x] qwen-plus
 - [x] text-embedding-v1
