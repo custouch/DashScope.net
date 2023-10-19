@@ -32,19 +32,19 @@ namespace DashScope.SemanticKernel
 
         public Task<ChatMessageBase> GetChatMessageAsync(CancellationToken cancellationToken = default)
         {
-            return Task.FromResult<ChatMessageBase>(new DashScopeChatMessage(AuthorRole.Assistant, _response!.Output.Text));
+            return Task.FromResult<ChatMessageBase>(new DashScopeChatMessage(AuthorRole.Assistant, _response!.Output.Text!));
         }
 
         public Task<string> GetCompletionAsync(CancellationToken cancellationToken = default)
         {
-            return Task.FromResult<string>(_response!.Output.Text);
+            return Task.FromResult<string>(_response!.Output.Text!);
         }
 
         public async IAsyncEnumerable<string> GetCompletionStreamingAsync([EnumeratorCancellation] CancellationToken cancellationToken = default)
         {
             await foreach (var response in responses!)
             {
-                yield return response.Output.Text;
+                yield return response.Output.Text!;
             }
         }
 
@@ -52,7 +52,7 @@ namespace DashScope.SemanticKernel
         {
             await foreach (var response in responses!)
             {
-                yield return new DashScopeChatMessage(AuthorRole.Assistant, response.Output.Text);
+                yield return new DashScopeChatMessage(AuthorRole.Assistant, response.Output.Text!);
             }
         }
 

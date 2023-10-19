@@ -5,6 +5,8 @@ using Microsoft.SemanticKernel.AI.Embeddings;
 using Microsoft.SemanticKernel.AI.TextCompletion;
 using SK_DashScope.Sample.Models;
 using System.Text;
+using DashScope.SemanticKernel;
+using Microsoft.SemanticKernel.AI;
 
 namespace SK_DashScope.Sample.Controllers
 {
@@ -44,7 +46,18 @@ namespace SK_DashScope.Sample.Controllers
             }
 
             var completion = kernel.GetService<ITextCompletion>();
-            var result = await completion.GetCompletionsAsync(input.Text, new CompleteRequestSettings { TopP = 0.8 }, cancellationToken);
+            // CompleteRequestSettings 已经被弃用且删除，新版改用 AIRequestSettings
+            // 自定义参数在属性ExtensionData里
+            // 或者使用 DashScopeAIRequestSettings，用法请看下面的函数 TextWithDashScopeSettingsAsync
+            var settings = new AIRequestSettings
+            {
+                ExtensionData = new Dictionary<string, object>
+                {
+                    { "top_p", 0.8 }
+                }
+            };
+            var result = await completion.GetCompletionsAsync(input.Text, settings, cancellationToken);
+
             var text = await result.First().GetCompletionAsync();
             return Ok(text);
         }
@@ -61,7 +74,8 @@ namespace SK_DashScope.Sample.Controllers
             var history = chat.CreateNewChat();
             history.AddUserMessage(input.Text);
 
-            var results = chat.GenerateMessageStreamAsync(history, cancellationToken: cancellationToken);
+            var settings = new DashScopeAIRequestSettings();
+            var results = chat.GenerateMessageStreamAsync(history, settings, cancellationToken: cancellationToken);
 
             await foreach (var result in results)
             {
@@ -87,6 +101,55 @@ namespace SK_DashScope.Sample.Controllers
             var serializableList = result.ToArray().ToList();
 
             return Ok(serializableList);
+        }
+
+        [HttpPost("text_with_settings")]
+        public async Task<IActionResult> TextWithDashScopeSettingsAsync([FromBody] UserInput input, CancellationToken cancellationToken)
+        {
+            if (string.IsNullOrWhiteSpace(input.Text))
+            {
+                return NoContent();
+            }
+
+            var completion = kernel.GetService<ITextCompletion>();
+            var settings = new DashScopeAIRequestSettings()
+            {
+                TopP = 0.5f,
+                TopK = 10,
+                Seed = 1234,
+                Temperature = 0.5f,
+                EnableSearch = true,
+            };
+            var result = await completion.GetCompletionsAsync(input.Text, settings, cancellationToken);
+
+            var text = await result.First().GetCompletionAsync(cancellationToken);
+            return Ok(text);
+        }
+
+        [HttpPost("text_stream_with_settings")]
+        public async Task TextStreamWithDashScopeSettingsAsync([FromBody] UserInput input, CancellationToken cancellationToken)
+        {
+            if (string.IsNullOrWhiteSpace(input.Text))
+            {
+                await Response.CompleteAsync();
+            }
+
+            var completion = kernel.GetService<ITextCompletion>();
+
+            var settings = new DashScopeAIRequestSettings();
+            var streamingResults = completion.GetStreamingCompletionsAsync(input.Text, settings, cancellationToken: cancellationToken);
+
+            await foreach (var streamingResult in streamingResults)
+            {
+                var results = streamingResult.GetCompletionStreamingAsync(cancellationToken);
+                await foreach (var result in results)
+                {
+                    await Response.WriteAsync("data: " + result + "\n\n", Encoding.UTF8, cancellationToken);
+                    await Response.Body.FlushAsync(cancellationToken);
+                }
+            }
+
+            await Response.CompleteAsync();
         }
     }
 }

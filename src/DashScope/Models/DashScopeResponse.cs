@@ -8,10 +8,7 @@ namespace DashScope.Models
 
     public class DashScopeResponse
     {
-        [JsonPropertyName("status_code")]
-        public int StatusCode { get; set; }
-
-        [JsonPropertyName("request_Id")]
+        [JsonPropertyName("request_id")]
         public string RequestId { get; set; } = string.Empty;
 
         [JsonPropertyName("code")]

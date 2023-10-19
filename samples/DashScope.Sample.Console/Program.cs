@@ -38,5 +38,13 @@ while (true)
              }
         }
     });
-    Console.WriteLine(result.Output.Text);
+
+    if (result.IsTextResponse)
+    {
+        Console.WriteLine(result.Output.Text);
+    }
+    else
+    {
+        Console.WriteLine(result.Output.Choices![0].Message.Content);
+    }
 }

@@ -1,7 +1,7 @@
 ﻿using DashScope;
 using Microsoft;
-using Microsoft.SemanticKernel.AI;
 using Microsoft.SemanticKernel.AI.Embeddings;
+using Microsoft.SemanticKernel.Diagnostics;
 
 public class DashScopeEmbeddingGeneration : ITextEmbeddingGeneration
 {
@@ -35,7 +35,7 @@ public class DashScopeEmbeddingGeneration : ITextEmbeddingGeneration
         }
         catch (DashScopeException ex)
         {
-            throw new AIException(AIException.ErrorCodes.ServiceError, ex.Message, ex);
+            throw new SKException(ex.Message, ex);
         }
     }
 }

@@ -3,6 +3,7 @@ using Microsoft;
 using Microsoft.SemanticKernel.AI.ChatCompletion;
 using Microsoft.SemanticKernel.AI.TextCompletion;
 using System.Runtime.CompilerServices;
+using Microsoft.SemanticKernel.AI;
 
 namespace DashScope.SemanticKernel
 {
@@ -11,7 +12,7 @@ namespace DashScope.SemanticKernel
         private readonly string _model;
         private readonly DashScopeClient _client;
 
-        public DashScopeTextCompletion(string apiKey, string model = DashScopeModels.QWenV1, HttpClient? client = null)
+        public DashScopeTextCompletion(string apiKey, string model = DashScopeModels.QWenTurbo, HttpClient? client = null)
         {
             Requires.NotNullOrWhiteSpace(apiKey, nameof(apiKey));
             Requires.NotNullOrWhiteSpace(model, nameof(model));
@@ -36,22 +37,26 @@ namespace DashScope.SemanticKernel
             return history;
         }
 
-        public async Task<IReadOnlyList<IChatResult>> GetChatCompletionsAsync(ChatHistory chat, ChatRequestSettings? requestSettings = null, CancellationToken cancellationToken = default)
+        public async Task<IReadOnlyList<IChatResult>> GetChatCompletionsAsync(ChatHistory chat, AIRequestSettings? requestSettings = null, CancellationToken cancellationToken = default)
         {
+            var settings = DashScopeAIRequestSettings.FromRequestSettings(requestSettings);
+
             var response = await _client.GenerationAsync(new CompletionRequest()
             {
                 Input = {
                     Messages = ChatHistoryToMessages(chat),
                 },
                 Model = this._model,
-                Parameters = ToParameters(requestSettings)
+                Parameters = ToParameters(settings)
             }, cancellationToken);
 
             return new List<DashScopeChatResult>() { new DashScopeChatResult(response) }.AsReadOnly();
         }
 
-        public async Task<IReadOnlyList<ITextResult>> GetCompletionsAsync(string text, CompleteRequestSettings requestSettings, CancellationToken cancellationToken = default)
+        public async Task<IReadOnlyList<ITextResult>> GetCompletionsAsync(string text, AIRequestSettings? requestSettings, CancellationToken cancellationToken = default)
         {
+            var settings = DashScopeAIRequestSettings.FromRequestSettings(requestSettings);
+
             var response = await _client.GenerationAsync(new CompletionRequest()
             {
                 Input = {
@@ -65,29 +70,34 @@ namespace DashScope.SemanticKernel
                     }
                 },
                 Model = this._model,
-                Parameters = ToParameters(requestSettings)
+                Parameters = ToParameters(settings)
             }, cancellationToken);
 
             return new List<DashScopeChatResult>() { new DashScopeChatResult(response) }.AsReadOnly();
         }
 
-        public async IAsyncEnumerable<IChatStreamingResult> GetStreamingChatCompletionsAsync(ChatHistory chat, ChatRequestSettings? requestSettings = null, [EnumeratorCancellation] CancellationToken cancellationToken = default)
+        public async IAsyncEnumerable<IChatStreamingResult> GetStreamingChatCompletionsAsync(ChatHistory chat, AIRequestSettings? requestSettings = null, [EnumeratorCancellation] CancellationToken cancellationToken = default)
         {
+            var settings = DashScopeAIRequestSettings.FromRequestSettings(requestSettings);
+
             var responses = _client.GenerationStreamAsync(new CompletionRequest()
             {
                 Input =
                 {
                     Messages = ChatHistoryToMessages(chat),
                 },
-                Parameters = ToParameters(requestSettings),
+                Parameters = ToParameters(settings, true),
                 Model = this._model
             }, cancellationToken);
+
             yield return new DashScopeChatResult(responses);
             await Task.CompletedTask;
         }
 
-        public async IAsyncEnumerable<ITextStreamingResult> GetStreamingCompletionsAsync(string text, CompleteRequestSettings requestSettings, [EnumeratorCancellation] CancellationToken cancellationToken = default)
+        public async IAsyncEnumerable<ITextStreamingResult> GetStreamingCompletionsAsync(string text, AIRequestSettings? requestSettings, [EnumeratorCancellation] CancellationToken cancellationToken = default)
         {
+            var settings = DashScopeAIRequestSettings.FromRequestSettings(requestSettings);
+
             var responses = _client.GenerationStreamAsync(new CompletionRequest()
             {
                 Input =
@@ -101,35 +111,30 @@ namespace DashScope.SemanticKernel
                         }
                     }
                 },
-                Parameters = ToParameters(requestSettings),
+                Parameters = ToParameters(settings, true),
                 Model = this._model
             }, cancellationToken);
+
             yield return new DashScopeChatResult(responses);
             await Task.CompletedTask;
         }
 
-        private static CompletionParameters ToParameters(ChatRequestSettings? settings)
+        private static CompletionParameters ToParameters(DashScopeAIRequestSettings? settings, bool? stream = null)
         {
             if (settings == null)
             {
                 return new CompletionParameters();
             }
-            else
-            {
-                return new CompletionParameters()
-                {
-                    TopK = Math.Max((int)(settings.Temperature * 100 % 100), 1),
-                    TopP = (float)settings.TopP,
-                };
-            }
-        }
 
-        private CompletionParameters ToParameters(CompleteRequestSettings settings)
-        {
             return new CompletionParameters()
             {
-                TopK = Math.Max((int)(settings.Temperature * 100 % 100), 1),
-                TopP = (float)settings.TopP,
+                TopP = settings.TopP,
+                Temperature = settings.Temperature,
+                TopK = settings.TopK,
+                Seed = settings.Seed,
+                IncrementalOutput = stream,
+                EnableSearch = settings.EnableSearch,
+                ResultFormat = "text"
             };
         }
 
