@@ -42,7 +42,7 @@ namespace DashScope
             }
             else
             {
-                throw new DashScopeException(result.StatusCode, result.Message);
+                throw new DashScopeException(result.Code, result.Message);
             }
         }
 
@@ -95,7 +95,7 @@ namespace DashScope
             }
             else
             {
-                throw new DashScopeException(result.StatusCode, result.Message);
+                throw new DashScopeException(result.Code, result.Message);
             }
         }
 
