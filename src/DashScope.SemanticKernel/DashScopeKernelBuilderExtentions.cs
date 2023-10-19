@@ -3,6 +3,7 @@ using DashScope.SemanticKernel;
 using Microsoft.SemanticKernel.AI.ChatCompletion;
 using Microsoft.SemanticKernel.AI.Embeddings;
 using Microsoft.SemanticKernel.AI.TextCompletion;
+using Microsoft.SemanticKernel.Plugins.Memory;
 
 namespace Microsoft.SemanticKernel
 {
@@ -18,7 +19,7 @@ namespace Microsoft.SemanticKernel
             bool setAsDefault = false
             )
         {
-            model ??= DashScopeModels.QWenV1;
+            model ??= DashScopeModels.QWenTurbo;
             var generation = new DashScopeTextCompletion(apiKey, model, httpClient);
             builder.WithAIService<IChatCompletion>(serviceId, generation, setAsDefault);
 
@@ -30,16 +31,15 @@ namespace Microsoft.SemanticKernel
             return builder;
         }
 
-        public static KernelBuilder WithDashScopeTextEmbeddingGenerationService(
-            this KernelBuilder builder,
+        public static MemoryBuilder WithDashScopeTextEmbeddingGenerationService(
+            this MemoryBuilder builder,
             string apiKey,
             string? model = null,
-            HttpClient? httpClient = null,
-            string? serviceId = null
+            HttpClient? httpClient = null
             )
         {
             model ??= DashScopeModels.TextEmbeddingV1;
-            builder.WithAIService<ITextEmbeddingGeneration>(serviceId, new DashScopeEmbeddingGeneration(apiKey, model, httpClient));
+            builder.WithTextEmbeddingGeneration(new DashScopeEmbeddingGeneration(apiKey, model, httpClient));
 
             return builder;
         }

@@ -12,7 +12,7 @@ namespace DashScope.SemanticKernel
         private readonly string _model;
         private readonly DashScopeClient _client;
 
-        public DashScopeTextCompletion(string apiKey, string model = DashScopeModels.QWenV1, HttpClient? client = null)
+        public DashScopeTextCompletion(string apiKey, string model = DashScopeModels.QWenTurbo, HttpClient? client = null)
         {
             Requires.NotNullOrWhiteSpace(apiKey, nameof(apiKey));
             Requires.NotNullOrWhiteSpace(model, nameof(model));
@@ -40,7 +40,7 @@ namespace DashScope.SemanticKernel
         public async Task<IReadOnlyList<IChatResult>> GetChatCompletionsAsync(ChatHistory chat, AIRequestSettings? requestSettings = null, CancellationToken cancellationToken = default)
         {
             var settings = DashScopeAIRequestSettings.FromRequestSettings(requestSettings);
-            
+
             var response = await _client.GenerationAsync(new CompletionRequest()
             {
                 Input = {
@@ -56,7 +56,7 @@ namespace DashScope.SemanticKernel
         public async Task<IReadOnlyList<ITextResult>> GetCompletionsAsync(string text, AIRequestSettings? requestSettings, CancellationToken cancellationToken = default)
         {
             var settings = DashScopeAIRequestSettings.FromRequestSettings(requestSettings);
-            
+
             var response = await _client.GenerationAsync(new CompletionRequest()
             {
                 Input = {
@@ -79,17 +79,17 @@ namespace DashScope.SemanticKernel
         public async IAsyncEnumerable<IChatStreamingResult> GetStreamingChatCompletionsAsync(ChatHistory chat, AIRequestSettings? requestSettings = null, [EnumeratorCancellation] CancellationToken cancellationToken = default)
         {
             var settings = DashScopeAIRequestSettings.FromRequestSettings(requestSettings);
-            
+
             var responses = _client.GenerationStreamAsync(new CompletionRequest()
             {
                 Input =
                 {
                     Messages = ChatHistoryToMessages(chat),
                 },
-                Parameters = ToParameters(settings),
+                Parameters = ToParameters(settings, true),
                 Model = this._model
             }, cancellationToken);
-            
+
             yield return new DashScopeChatResult(responses);
             await Task.CompletedTask;
         }
@@ -97,7 +97,7 @@ namespace DashScope.SemanticKernel
         public async IAsyncEnumerable<ITextStreamingResult> GetStreamingCompletionsAsync(string text, AIRequestSettings? requestSettings, [EnumeratorCancellation] CancellationToken cancellationToken = default)
         {
             var settings = DashScopeAIRequestSettings.FromRequestSettings(requestSettings);
-            
+
             var responses = _client.GenerationStreamAsync(new CompletionRequest()
             {
                 Input =
@@ -111,15 +111,15 @@ namespace DashScope.SemanticKernel
                         }
                     }
                 },
-                Parameters = ToParameters(settings),
+                Parameters = ToParameters(settings, true),
                 Model = this._model
             }, cancellationToken);
-            
+
             yield return new DashScopeChatResult(responses);
             await Task.CompletedTask;
         }
 
-        private static CompletionParameters ToParameters(DashScopeAIRequestSettings? settings)
+        private static CompletionParameters ToParameters(DashScopeAIRequestSettings? settings, bool? stream = null)
         {
             if (settings == null)
             {
@@ -132,9 +132,9 @@ namespace DashScope.SemanticKernel
                 Temperature = settings.Temperature,
                 TopK = settings.TopK,
                 Seed = settings.Seed,
-                IncrementalOutput = settings.IncrementalOutput,
+                IncrementalOutput = stream,
                 EnableSearch = settings.EnableSearch,
-                ResultFormat = settings.ResultFormat
+                ResultFormat = "text"
             };
         }
 

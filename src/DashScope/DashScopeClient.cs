@@ -52,7 +52,7 @@ namespace DashScope
 
             await using var stream = await response.Content.ReadAsStreamAsync();
             using var reader = new StreamReader(stream);
-            
+
             while (!reader.EndOfStream)
             {
                 cancellationToken.ThrowIfCancellationRequested();

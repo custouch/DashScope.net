@@ -32,42 +32,19 @@ namespace DashScope.SemanticKernel
 
         public Task<ChatMessageBase> GetChatMessageAsync(CancellationToken cancellationToken = default)
         {
-            if (_response!.IsTextResponse)
-            {
-                return Task.FromResult<ChatMessageBase>(new DashScopeChatMessage(AuthorRole.Assistant, _response!.Output.Text!));
-            }
-            else
-            {
-                Message message = _response!.Output.Choices![0].Message;
-                return Task.FromResult<ChatMessageBase>(new DashScopeChatMessage(AuthorRole.Assistant, message.Content));
-            }
+            return Task.FromResult<ChatMessageBase>(new DashScopeChatMessage(AuthorRole.Assistant, _response!.Output.Text!));
         }
 
         public Task<string> GetCompletionAsync(CancellationToken cancellationToken = default)
         {
-            if (_response!.IsTextResponse)
-            {
-                return Task.FromResult<string>(_response!.Output.Text!);
-            }
-            else
-            {
-                Message message = _response!.Output.Choices![0].Message;
-                return Task.FromResult<string>(message.Content);
-            }
+            return Task.FromResult<string>(_response!.Output.Text!);
         }
 
         public async IAsyncEnumerable<string> GetCompletionStreamingAsync([EnumeratorCancellation] CancellationToken cancellationToken = default)
         {
             await foreach (var response in responses!)
             {
-                if (response.IsTextResponse)
-                {
-                    yield return response.Output.Text!;
-                }
-                else
-                {
-                    yield return response.Output.Choices![0].Message.Content;
-                }
+                yield return response.Output.Text!;
             }
         }
 
@@ -75,15 +52,7 @@ namespace DashScope.SemanticKernel
         {
             await foreach (var response in responses!)
             {
-                if (response.IsTextResponse)
-                { 
-                    yield return new DashScopeChatMessage(AuthorRole.Assistant, response.Output.Text!);
-                }
-                else
-                {
-                    Message message = response.Output.Choices![0].Message;
-                    yield return new DashScopeChatMessage(AuthorRole.Assistant, message.Content);
-                }
+                yield return new DashScopeChatMessage(AuthorRole.Assistant, response.Output.Text!);
             }
         }
 

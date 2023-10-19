@@ -38,7 +38,7 @@ while (true)
              }
         }
     });
-    
+
     if (result.IsTextResponse)
     {
         Console.WriteLine(result.Output.Text);

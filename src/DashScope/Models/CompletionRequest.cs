@@ -8,7 +8,7 @@ namespace DashScope.Models
     public class CompletionRequest
     {
         [JsonPropertyName("model")]
-        public string Model { get; set; } = DashScopeModels.QWenV1;
+        public string Model { get; set; } = DashScopeModels.QWenTurbo;
 
         [JsonPropertyName("input")]
         public CompletionInput Input { get; set; } = new();

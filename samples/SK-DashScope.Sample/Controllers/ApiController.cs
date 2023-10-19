@@ -73,12 +73,8 @@ namespace SK_DashScope.Sample.Controllers
             var chat = kernel.GetService<IChatCompletion>();
             var history = chat.CreateNewChat();
             history.AddUserMessage(input.Text);
-            
-            // 可以使用IncrementalOutput来控制stream输出的方式
-            var settings = new DashScopeAIRequestSettings()
-            {
-                IncrementalOutput = true
-            };
+
+            var settings = new DashScopeAIRequestSettings();
             var results = chat.GenerateMessageStreamAsync(history, settings, cancellationToken: cancellationToken);
 
             await foreach (var result in results)
@@ -106,7 +102,7 @@ namespace SK_DashScope.Sample.Controllers
 
             return Ok(serializableList);
         }
-        
+
         [HttpPost("text_with_settings")]
         public async Task<IActionResult> TextWithDashScopeSettingsAsync([FromBody] UserInput input, CancellationToken cancellationToken)
         {
@@ -122,16 +118,14 @@ namespace SK_DashScope.Sample.Controllers
                 TopK = 10,
                 Seed = 1234,
                 Temperature = 0.5f,
-                IncrementalOutput = false,
                 EnableSearch = true,
-                ResultFormat = "text"
             };
             var result = await completion.GetCompletionsAsync(input.Text, settings, cancellationToken);
 
             var text = await result.First().GetCompletionAsync(cancellationToken);
             return Ok(text);
         }
-        
+
         [HttpPost("text_stream_with_settings")]
         public async Task TextStreamWithDashScopeSettingsAsync([FromBody] UserInput input, CancellationToken cancellationToken)
         {
@@ -141,14 +135,10 @@ namespace SK_DashScope.Sample.Controllers
             }
 
             var completion = kernel.GetService<ITextCompletion>();
-            
-            // 可以使用IncrementalOutput来控制stream输出的方式
-            var settings = new DashScopeAIRequestSettings()
-            {
-                IncrementalOutput = true
-            };
+
+            var settings = new DashScopeAIRequestSettings();
             var streamingResults = completion.GetStreamingCompletionsAsync(input.Text, settings, cancellationToken: cancellationToken);
-            
+
             await foreach (var streamingResult in streamingResults)
             {
                 var results = streamingResult.GetCompletionStreamingAsync(cancellationToken);
@@ -160,31 +150,6 @@ namespace SK_DashScope.Sample.Controllers
             }
 
             await Response.CompleteAsync();
-        }
-        
-        [HttpPost("text_with_message_format")]
-        public async Task<IActionResult> TextWithMessageFormatAsync([FromBody] UserInput input, CancellationToken cancellationToken)
-        {
-            if (string.IsNullOrWhiteSpace(input.Text))
-            {
-                return NoContent();
-            }
-
-            var completion = kernel.GetService<ITextCompletion>();
-            var settings = new DashScopeAIRequestSettings()
-            {
-                TopP = 0.5f,
-                TopK = 0,
-                Seed = 1234,
-                Temperature = 0.5f,
-                IncrementalOutput = false,
-                EnableSearch = true,
-                ResultFormat = "message"
-            };
-            var result = await completion.GetCompletionsAsync(input.Text, settings, cancellationToken);
-
-            var text = await result[0].GetCompletionAsync(cancellationToken);
-            return Ok(text);
         }
     }
 }
