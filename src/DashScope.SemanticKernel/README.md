@@ -14,11 +14,16 @@ dotnet add package DashScope.SemanticKernel --prerelease
 builder.Services.AddScoped(svc =>
 {
     var kernel = Kernel.Builder.WithDashScopeCompletionService(configuration["ApiKey"])
-    .WithDashScopeTextEmbeddingGenerationService(configuration["ApiKey"])
     .Build();
     return kernel;
 });
 
+builder.Services.AddScoped(svc =>
+{
+    return new MemoryBuilder()
+    .WithDashScopeTextEmbeddingGenerationService(builder.Configuration["ApiKey"])
+    .Build();
+});
 ```
 
 ## Features
