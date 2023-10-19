@@ -131,5 +131,34 @@ namespace SK_DashScope.Sample.Controllers
             var text = await result.First().GetCompletionAsync(cancellationToken);
             return Ok(text);
         }
+        [HttpPost("text_stream_with_settings")]
+        public async Task TextStreamWithDashScopeSettingsAsync([FromBody] UserInput input, CancellationToken cancellationToken)
+        {
+            if (string.IsNullOrWhiteSpace(input.Text))
+            {
+                await Response.CompleteAsync();
+            }
+
+            var completion = kernel.GetService<ITextCompletion>();
+            
+            // 可以使用IncrementalOutput来控制stream输出的方式
+            var settings = new DashScopeAIRequestSettings()
+            {
+                IncrementalOutput = true
+            };
+            var streamingResults = completion.GetStreamingCompletionsAsync(input.Text, settings, cancellationToken: cancellationToken);
+            
+            await foreach (var streamingResult in streamingResults)
+            {
+                var results = streamingResult.GetCompletionStreamingAsync(cancellationToken);
+                await foreach (var result in results)
+                {
+                    await Response.WriteAsync("data: " + result + "\n\n", Encoding.UTF8, cancellationToken);
+                    await Response.Body.FlushAsync(cancellationToken);
+                }
+            }
+
+            await Response.CompleteAsync();
+        }
     }
 }
