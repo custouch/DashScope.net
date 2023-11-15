@@ -2,16 +2,11 @@
 using Microsoft.SemanticKernel.AI.ChatCompletion;
 using Microsoft.SemanticKernel.AI.TextCompletion;
 using Microsoft.SemanticKernel.Orchestration;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace DashScope.SemanticKernel
 {
-    public class DashScopeChatResult : IChatStreamingResult, ITextStreamingResult
+    public class DashScopeChatResult : IChatStreamingResult, ITextStreamingResult, ITextResult
     {
         private readonly CompletionResponse? _response;
         private readonly IAsyncEnumerable<CompletionResponse>? responses;
@@ -55,8 +50,8 @@ namespace DashScope.SemanticKernel
                 yield return new DashScopeChatMessage(AuthorRole.Assistant, response.Output.Text!);
             }
         }
-
     }
+
     public class DashScopeChatMessage : ChatMessageBase
     {
         public DashScopeChatMessage(AuthorRole role, string content) : base(role, content)

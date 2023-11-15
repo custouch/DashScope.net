@@ -1,9 +1,9 @@
 ﻿using DashScope.Models;
 using Microsoft;
+using Microsoft.SemanticKernel.AI;
 using Microsoft.SemanticKernel.AI.ChatCompletion;
 using Microsoft.SemanticKernel.AI.TextCompletion;
 using System.Runtime.CompilerServices;
-using Microsoft.SemanticKernel.AI;
 
 namespace DashScope.SemanticKernel
 {
@@ -50,7 +50,7 @@ namespace DashScope.SemanticKernel
                 Parameters = ToParameters(settings)
             }, cancellationToken);
 
-            return new List<DashScopeChatResult>() { new DashScopeChatResult(response) }.AsReadOnly();
+            return (IReadOnlyList<IChatResult>)new List<DashScopeChatResult>() { new DashScopeChatResult(response) }.AsReadOnly();
         }
 
         public async Task<IReadOnlyList<ITextResult>> GetCompletionsAsync(string text, AIRequestSettings? requestSettings, CancellationToken cancellationToken = default)
