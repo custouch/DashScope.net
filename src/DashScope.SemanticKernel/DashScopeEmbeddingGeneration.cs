@@ -8,6 +8,8 @@ public class DashScopeEmbeddingGeneration : ITextEmbeddingGeneration
     private readonly DashScopeClient _client;
     private readonly string _model;
 
+
+
     public DashScopeEmbeddingGeneration(string apiKey, string model = DashScopeModels.TextEmbeddingV1, HttpClient? client = null)
     {
         Requires.NotNullOrWhiteSpace(apiKey, nameof(apiKey));
@@ -16,6 +18,9 @@ public class DashScopeEmbeddingGeneration : ITextEmbeddingGeneration
         this._model = model;
         _client = new DashScopeClient(apiKey, client);
     }
+
+    private readonly Dictionary<string, string> _attributes = new();
+    public IReadOnlyDictionary<string, string> Attributes => this._attributes;
 
     public async Task<IList<ReadOnlyMemory<float>>> GenerateEmbeddingsAsync(IList<string> data, CancellationToken cancellationToken = default)
     {

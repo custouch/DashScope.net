@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace DashScope.SemanticKernel
 {
-    public class DashScopeChatResult : IChatStreamingResult, ITextStreamingResult
+    public class DashScopeChatResult : IChatStreamingResult, ITextStreamingResult, ITextResult, IChatResult
     {
         private readonly CompletionResponse? _response;
         private readonly IAsyncEnumerable<CompletionResponse>? responses;
@@ -30,9 +30,9 @@ namespace DashScope.SemanticKernel
 
         public ModelResult ModelResult { get; private set; }
 
-        public Task<ChatMessageBase> GetChatMessageAsync(CancellationToken cancellationToken = default)
+        public Task<ChatMessage> GetChatMessageAsync(CancellationToken cancellationToken = default)
         {
-            return Task.FromResult<ChatMessageBase>(new DashScopeChatMessage(AuthorRole.Assistant, _response!.Output.Text!));
+            return Task.FromResult<ChatMessage>(new DashScopeChatMessage(AuthorRole.Assistant, _response!.Output.Text!));
         }
 
         public Task<string> GetCompletionAsync(CancellationToken cancellationToken = default)
@@ -48,7 +48,7 @@ namespace DashScope.SemanticKernel
             }
         }
 
-        public async IAsyncEnumerable<ChatMessageBase> GetStreamingChatMessageAsync([EnumeratorCancellation] CancellationToken cancellationToken = default)
+        public async IAsyncEnumerable<ChatMessage> GetStreamingChatMessageAsync([EnumeratorCancellation] CancellationToken cancellationToken = default)
         {
             await foreach (var response in responses!)
             {
@@ -57,7 +57,7 @@ namespace DashScope.SemanticKernel
         }
 
     }
-    public class DashScopeChatMessage : ChatMessageBase
+    public class DashScopeChatMessage : ChatMessage
     {
         public DashScopeChatMessage(AuthorRole role, string content) : base(role, content)
         {
