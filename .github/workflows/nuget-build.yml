@@ -1,0 +1,34 @@
+name: NuGet-Build
+
+on:
+  workflow_dispatch:
+  push:
+    tags:
+      - '*'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    env:
+      NUGET_PACKAGES: ${{ github.workspace }}/.nuget/packages
+
+    steps:
+      - uses: actions/checkout@v3
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: 8.0.x
+      - name: Restore dependencies
+        run: dotnet restore
+      - name: Build & Pack
+        run: |
+          dotnet build -c Release --no-restore
+          dotnet pack -c Release -o nupkgs
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v3.1.3
+        with:
+          name: nuget-packages
+          path: ${{ github.workspace }}/nupkgs/*.nupkg
+      - name: Push NuGet
+        run: dotnet nuget push **/*.nupkg --source https://api.nuget.org/v3/index.json --api-key ${{ secrets.NUGET_API_KEY }} --skip-duplicate
+    
