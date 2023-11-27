@@ -14,7 +14,7 @@ builder.Services.AddSwaggerGen();
 
 builder.Services.AddScoped(svc =>
 {
-    var kernel = Kernel.Builder.WithDashScopeCompletionService(builder.Configuration["DashScope:ApiKey"])
+    var kernel = new KernelBuilder().WithDashScopeCompletionService(builder.Configuration["DashScope:ApiKey"])
     .Build();
     return kernel;
 });

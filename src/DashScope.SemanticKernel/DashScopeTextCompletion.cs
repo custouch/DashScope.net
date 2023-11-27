@@ -12,6 +12,9 @@ namespace DashScope.SemanticKernel
         private readonly string _model;
         private readonly DashScopeClient _client;
 
+        private readonly Dictionary<string, string> _attributes = new();
+        public IReadOnlyDictionary<string, string> Attributes => this._attributes;
+
         public DashScopeTextCompletion(string apiKey, string model = DashScopeModels.QWenTurbo, HttpClient? client = null)
         {
             Requires.NotNullOrWhiteSpace(apiKey, nameof(apiKey));
