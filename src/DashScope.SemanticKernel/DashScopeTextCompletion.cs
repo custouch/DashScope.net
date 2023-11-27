@@ -25,11 +25,6 @@ namespace DashScope.SemanticKernel
             _client = new DashScopeClient(apiKey, client);
         }
 
-        /// <summary>
-        /// Unsupported instructions
-        /// </summary>
-        /// <param name="instructions"></param>
-        /// <returns></returns>
         public ChatHistory CreateNewChat(string? instructions = null)
         {
             var history = new ChatHistory();

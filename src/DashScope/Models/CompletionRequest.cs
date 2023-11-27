@@ -93,6 +93,7 @@ namespace DashScope.Models
 
         [JsonPropertyName("content")]
         public string Content { get; set; } = string.Empty;
+
     }
 
     public static class MessageRole
