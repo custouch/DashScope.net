@@ -8,7 +8,7 @@ namespace DashScope.SemanticKernel;
 /// DashScope的配置参数
 /// </code>
 /// </summary>
-public class DashScopeAIRequestSettings : AIRequestSettings
+public class DashScopeAIRequestSettings : PromptExecutionSettings
 {
     /// <summary>
     /// 生成时，核采样方法的概率阈值。例如，取值为0.5时，仅保留累计概率之和大于等于0.5的概率分布中的token，作为随机采样的候选集。取值范围为(0,1.0)，取值越大，生成的随机性越高；取值越低，生成的随机性越低。默认值 0.5。注意，取值不要大于等于1
@@ -50,7 +50,7 @@ public class DashScopeAIRequestSettings : AIRequestSettings
         ReadCommentHandling = JsonCommentHandling.Skip
     };
 
-    public static DashScopeAIRequestSettings FromRequestSettings(AIRequestSettings? requestSettings, int? defaultMaxTokens = null)
+    public static DashScopeAIRequestSettings FromRequestSettings(PromptExecutionSettings? requestSettings, int? defaultMaxTokens = null)
     {
         if (requestSettings is null)
         {

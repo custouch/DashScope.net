@@ -1,8 +1,9 @@
 ﻿using DashScope;
 using DashScope.SemanticKernel;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.SemanticKernel.AI.ChatCompletion;
 using Microsoft.SemanticKernel.AI.Embeddings;
-using Microsoft.SemanticKernel.AI.TextCompletion;
+using Microsoft.SemanticKernel.AI.TextGeneration;
 using Microsoft.SemanticKernel.Plugins.Memory;
 
 namespace Microsoft.SemanticKernel
@@ -14,23 +15,20 @@ namespace Microsoft.SemanticKernel
             string apiKey,
             string? model = null,
             HttpClient? httpClient = null,
-            bool alsoAsTextCompletion = true,
-            string? serviceId = null,
-            bool setAsDefault = false
+            string? serviceId = null
             )
         {
-            model ??= DashScopeModels.QWenTurbo;
-            var generation = new DashScopeTextCompletion(apiKey, model, httpClient);
-            builder.WithAIService<IChatCompletion>(serviceId, generation, setAsDefault);
-
-            if (alsoAsTextCompletion)
+            builder.WithServices(c =>
             {
-                builder.WithAIService<ITextCompletion>(serviceId, generation, setAsDefault);
-            }
-
+                model ??= DashScopeModels.QWenTurbo;
+                var generation = new DashScopeTextCompletion(apiKey, model, httpClient);
+                c.AddKeyedSingleton<IChatCompletionService>(serviceId, generation);
+                c.AddKeyedSingleton<ITextGenerationService>(serviceId, generation);
+            });
             return builder;
         }
 
+#pragma warning disable SKEXP0052 // Type is for evaluation purposes only and is subject to change or removal in future updates. Suppress this diagnostic to proceed.
         public static MemoryBuilder WithDashScopeTextEmbeddingGenerationService(
             this MemoryBuilder builder,
             string apiKey,
@@ -43,12 +41,6 @@ namespace Microsoft.SemanticKernel
 
             return builder;
         }
-
-        private static DashScopeClient CreateDashScopeClient(string apiKey, HttpClient? httpClient)
-        {
-            Requires.NotNullOrWhiteSpace(apiKey, nameof(apiKey));
-
-            return new DashScopeClient(apiKey, httpClient);
-        }
+#pragma warning restore SKEXP0052 // Type is for evaluation purposes only and is subject to change or removal in future updates. Suppress this diagnostic to proceed.
     }
 }

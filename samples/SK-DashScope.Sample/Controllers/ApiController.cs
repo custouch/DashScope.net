@@ -2,11 +2,11 @@
 using Microsoft.SemanticKernel;
 using Microsoft.SemanticKernel.AI.ChatCompletion;
 using Microsoft.SemanticKernel.AI.Embeddings;
-using Microsoft.SemanticKernel.AI.TextCompletion;
 using SK_DashScope.Sample.Models;
 using System.Text;
 using DashScope.SemanticKernel;
 using Microsoft.SemanticKernel.AI;
+using Microsoft.SemanticKernel.AI.TextGeneration;
 
 namespace SK_DashScope.Sample.Controllers
 {
@@ -14,9 +14,9 @@ namespace SK_DashScope.Sample.Controllers
     [ApiController]
     public class ApiController : ControllerBase
     {
-        private readonly IKernel kernel;
+        private readonly Kernel kernel;
 
-        public ApiController(IKernel kernel)
+        public ApiController(Kernel kernel)
         {
             this.kernel = kernel;
         }
@@ -29,12 +29,12 @@ namespace SK_DashScope.Sample.Controllers
                 return NoContent();
             }
 
-            var chat = kernel.GetService<IChatCompletion>();
-            var history = chat.CreateNewChat();
+            var chat = kernel.GetService<IChatCompletionService>();
+            var history = new ChatHistory();
             history.AddUserMessage(input.Text);
 
-            var result = await chat.GenerateMessageAsync(history);
-            return Ok(result);
+            var result = await chat.GetChatMessageContentAsync(history);
+            return Ok(result.Content);
         }
 
         [HttpPost("text")]
@@ -45,20 +45,18 @@ namespace SK_DashScope.Sample.Controllers
                 return NoContent();
             }
 
-            var completion = kernel.GetService<ITextCompletion>();
-            // CompleteRequestSettings 已经被弃用且删除，新版改用 AIRequestSettings
-            // 自定义参数在属性ExtensionData里
-            // 或者使用 DashScopeAIRequestSettings，用法请看下面的函数 TextWithDashScopeSettingsAsync
-            var settings = new AIRequestSettings
+            var completion = kernel.GetService<ITextGenerationService>();
+
+            var settings = new PromptExecutionSettings()
             {
                 ExtensionData = new Dictionary<string, object>
                 {
                     { "top_p", 0.8 }
                 }
             };
-            var result = await completion.GetCompletionsAsync(input.Text, settings, cancellationToken);
+            var result = await completion.GetTextContentAsync(input.Text, settings, cancellationToken: cancellationToken);
 
-            var text = await result.First().GetCompletionAsync();
+            var text = result.Text;
             return Ok(text);
         }
 
@@ -70,12 +68,12 @@ namespace SK_DashScope.Sample.Controllers
                 await Response.CompleteAsync();
             }
 
-            var chat = kernel.GetService<IChatCompletion>();
-            var history = chat.CreateNewChat();
+            var chat = kernel.GetService<IChatCompletionService>();
+            var history = new ChatHistory();
             history.AddUserMessage(input.Text);
 
             var settings = new DashScopeAIRequestSettings();
-            var results = chat.GenerateMessageStreamAsync(history, settings, cancellationToken: cancellationToken);
+            var results = chat.GetStreamingChatMessageContentsAsync(history, settings, cancellationToken: cancellationToken);
 
             await foreach (var result in results)
             {
@@ -86,23 +84,6 @@ namespace SK_DashScope.Sample.Controllers
             await Response.CompleteAsync();
         }
 
-        [HttpPost("embedding")]
-        public async Task<IActionResult> EmbeddingAsync([FromBody] UserInput input, CancellationToken cancellationToken)
-        {
-            if (string.IsNullOrWhiteSpace(input.Text))
-            {
-                return NoContent();
-            }
-
-            var embedding = kernel.GetService<ITextEmbeddingGeneration>();
-
-            ReadOnlyMemory<float> result = await embedding.GenerateEmbeddingAsync(input.Text, cancellationToken);
-
-            var serializableList = result.ToArray().ToList();
-
-            return Ok(serializableList);
-        }
-
         [HttpPost("text_with_settings")]
         public async Task<IActionResult> TextWithDashScopeSettingsAsync([FromBody] UserInput input, CancellationToken cancellationToken)
         {
@@ -111,7 +92,7 @@ namespace SK_DashScope.Sample.Controllers
                 return NoContent();
             }
 
-            var completion = kernel.GetService<ITextCompletion>();
+            var completion = kernel.GetService<ITextGenerationService>();
             var settings = new DashScopeAIRequestSettings()
             {
                 TopP = 0.5f,
@@ -120,9 +101,9 @@ namespace SK_DashScope.Sample.Controllers
                 Temperature = 0.5f,
                 EnableSearch = true,
             };
-            var result = await completion.GetCompletionsAsync(input.Text, settings, cancellationToken);
+            var result = await completion.GetTextContentsAsync(input.Text, settings, null, cancellationToken);
 
-            var text = await result.First().GetCompletionAsync(cancellationToken);
+            var text = result[0].Text;
             return Ok(text);
         }
 
@@ -134,19 +115,15 @@ namespace SK_DashScope.Sample.Controllers
                 await Response.CompleteAsync();
             }
 
-            var completion = kernel.GetService<ITextCompletion>();
+            var completion = kernel.GetService<ITextGenerationService>();
 
             var settings = new DashScopeAIRequestSettings();
-            var streamingResults = completion.GetStreamingCompletionsAsync(input.Text, settings, cancellationToken: cancellationToken);
+            var streamingResults = completion.GetStreamingTextContentsAsync(input.Text, settings, cancellationToken: cancellationToken);
 
             await foreach (var streamingResult in streamingResults)
             {
-                var results = streamingResult.GetCompletionStreamingAsync(cancellationToken);
-                await foreach (var result in results)
-                {
-                    await Response.WriteAsync("data: " + result + "\n\n", Encoding.UTF8, cancellationToken);
-                    await Response.Body.FlushAsync(cancellationToken);
-                }
+                await Response.WriteAsync("data: " + streamingResult + "\n\n", Encoding.UTF8, cancellationToken);
+                await Response.Body.FlushAsync(cancellationToken);
             }
 
             await Response.CompleteAsync();
