@@ -3,7 +3,7 @@
 	<PropertyGroup>
 		<TargetFramework>netstandard2.1</TargetFramework>
 		<PackageId>$(AssemblyName)</PackageId>
-		<Version>0.4.0-preview</Version>
+		<Version>0.5.0-preview</Version>
 		<LangVersion>10</LangVersion>
 		<Nullable>enable</Nullable>
 		<Authors>Custouch</Authors>

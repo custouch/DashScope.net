@@ -1,19 +1,20 @@
 ﻿using DashScope.Models;
 using Microsoft;
 using Microsoft.SemanticKernel.AI.ChatCompletion;
-using Microsoft.SemanticKernel.AI.TextCompletion;
 using System.Runtime.CompilerServices;
+using Microsoft.SemanticKernel.AI.TextGeneration;
 using Microsoft.SemanticKernel.AI;
+using Microsoft.SemanticKernel;
 
 namespace DashScope.SemanticKernel
 {
-    public class DashScopeTextCompletion : IChatCompletion, ITextCompletion
+    public class DashScopeTextCompletion : IChatCompletionService, ITextGenerationService
     {
         private readonly string _model;
         private readonly DashScopeClient _client;
 
-        private readonly Dictionary<string, string> _attributes = new();
-        public IReadOnlyDictionary<string, string> Attributes => this._attributes;
+        private readonly Dictionary<string, object?> _attributes = new();
+        public IReadOnlyDictionary<string, object?> Attributes => this._attributes;
 
         public DashScopeTextCompletion(string apiKey, string model = DashScopeModels.QWenTurbo, HttpClient? client = null)
         {
@@ -34,10 +35,9 @@ namespace DashScope.SemanticKernel
             }
             return history;
         }
-
-        public async Task<IReadOnlyList<IChatResult>> GetChatCompletionsAsync(ChatHistory chat, AIRequestSettings? requestSettings = null, CancellationToken cancellationToken = default)
+        public async Task<IReadOnlyList<ChatMessageContent>> GetChatMessageContentsAsync(ChatHistory chat, PromptExecutionSettings? executionSettings = null, Kernel? kernel = null, CancellationToken cancellationToken = default)
         {
-            var settings = DashScopeAIRequestSettings.FromRequestSettings(requestSettings);
+            var settings = DashScopeAIRequestSettings.FromRequestSettings(executionSettings);
 
             var response = await _client.GenerationAsync(new CompletionRequest()
             {
@@ -48,12 +48,32 @@ namespace DashScope.SemanticKernel
                 Parameters = ToParameters(settings)
             }, cancellationToken);
 
-            return new List<DashScopeChatResult>() { new DashScopeChatResult(response) }.AsReadOnly();
+            return new List<ChatMessageContent>() { new DashScopeChatMessage(response) }.AsReadOnly();
         }
 
-        public async Task<IReadOnlyList<ITextResult>> GetCompletionsAsync(string text, AIRequestSettings? requestSettings, CancellationToken cancellationToken = default)
+        public async IAsyncEnumerable<StreamingChatMessageContent> GetStreamingChatMessageContentsAsync(ChatHistory chatHistory, PromptExecutionSettings? executionSettings = null, Kernel? kernel = null, [EnumeratorCancellation] CancellationToken cancellationToken = default)
         {
-            var settings = DashScopeAIRequestSettings.FromRequestSettings(requestSettings);
+            var settings = DashScopeAIRequestSettings.FromRequestSettings(executionSettings);
+
+            var responses = _client.GenerationStreamAsync(new CompletionRequest()
+            {
+                Input =
+                {
+                    Messages = ChatHistoryToMessages(chatHistory),
+                },
+                Parameters = ToParameters(settings, true),
+                Model = this._model
+            }, cancellationToken);
+            await foreach (var response in responses)
+            {
+                yield return new DashScopeStreamingChatMessage(response);
+            }
+
+        }
+
+        public async Task<IReadOnlyList<TextContent>> GetTextContentsAsync(string prompt, PromptExecutionSettings? executionSettings = null, Kernel? kernel = null, CancellationToken cancellationToken = default)
+        {
+            var settings = DashScopeAIRequestSettings.FromRequestSettings(executionSettings);
 
             var response = await _client.GenerationAsync(new CompletionRequest()
             {
@@ -63,7 +83,7 @@ namespace DashScope.SemanticKernel
                         new Message()
                         {
                             Role = MessageRole.User,
-                            Content = text
+                            Content = prompt
                         }
                     }
                 },
@@ -71,30 +91,12 @@ namespace DashScope.SemanticKernel
                 Parameters = ToParameters(settings)
             }, cancellationToken);
 
-            return new List<DashScopeChatResult>() { new DashScopeChatResult(response) }.AsReadOnly();
+            return new List<TextContent>() { new(response.Output.Text) }.AsReadOnly();
         }
 
-        public async IAsyncEnumerable<IChatStreamingResult> GetStreamingChatCompletionsAsync(ChatHistory chat, AIRequestSettings? requestSettings = null, [EnumeratorCancellation] CancellationToken cancellationToken = default)
+        public async IAsyncEnumerable<StreamingTextContent> GetStreamingTextContentsAsync(string prompt, PromptExecutionSettings? executionSettings = null, Kernel? kernel = null, [EnumeratorCancellation] CancellationToken cancellationToken = default)
         {
-            var settings = DashScopeAIRequestSettings.FromRequestSettings(requestSettings);
-
-            var responses = _client.GenerationStreamAsync(new CompletionRequest()
-            {
-                Input =
-                {
-                    Messages = ChatHistoryToMessages(chat),
-                },
-                Parameters = ToParameters(settings, true),
-                Model = this._model
-            }, cancellationToken);
-
-            yield return new DashScopeChatResult(responses);
-            await Task.CompletedTask;
-        }
-
-        public async IAsyncEnumerable<ITextStreamingResult> GetStreamingCompletionsAsync(string text, AIRequestSettings? requestSettings, [EnumeratorCancellation] CancellationToken cancellationToken = default)
-        {
-            var settings = DashScopeAIRequestSettings.FromRequestSettings(requestSettings);
+            var settings = DashScopeAIRequestSettings.FromRequestSettings(executionSettings);
 
             var responses = _client.GenerationStreamAsync(new CompletionRequest()
             {
@@ -105,16 +107,18 @@ namespace DashScope.SemanticKernel
                         new Message()
                         {
                             Role = MessageRole.User,
-                            Content = text
+                            Content = prompt
                         }
                     }
                 },
                 Parameters = ToParameters(settings, true),
                 Model = this._model
             }, cancellationToken);
+            await foreach (var response in responses)
+            {
+                yield return new StreamingTextContent(response.Output.Text);
+            }
 
-            yield return new DashScopeChatResult(responses);
-            await Task.CompletedTask;
         }
 
         private static CompletionParameters ToParameters(DashScopeAIRequestSettings? settings, bool? stream = null)
@@ -160,5 +164,7 @@ namespace DashScope.SemanticKernel
             }
             return MessageRole.User;
         }
+
+
     }
 }
