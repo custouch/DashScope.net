@@ -13,15 +13,15 @@ public static class KernerMemoryBuilderExtensions
 {
     public static IKernelMemoryBuilder WithDashScopeTextGeneration(this IKernelMemoryBuilder builder, DashScopeClient client, DashScopeOptions? options = null)
     {
-        return builder.AddSingleton<ITextGeneration>(new DashScopeTextGeneration(client, options ?? new DashScopeOptions()));
+        return builder.AddSingleton<ITextGenerator>(new DashScopeTextGenerator(client, options ?? new DashScopeOptions()));
     }
 
     public static IKernelMemoryBuilder WithDashScopeEmbeddingGeneration(this IKernelMemoryBuilder builder, DashScopeClient client, DashScopeOptions? options = null)
     {
 
-        var generation = new DashScopeTextEmbeddingGeneration(client, options ?? new DashScopeOptions());
+        var generation = new DashScopeTextEmbeddingGenerator(client, options ?? new DashScopeOptions());
 
-        builder.AddSingleton<ITextEmbeddingGeneration>(generation);
+        builder.AddSingleton<ITextEmbeddingGenerator>(generation);
         builder.AddIngestionEmbeddingGenerator(generation);
 
         return builder;

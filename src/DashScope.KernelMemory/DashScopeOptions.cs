@@ -27,5 +27,11 @@ namespace DashScope.KernelMemory
         /// It will be merged with the <see cref="TextGenerationOptions"/> when generating text.
         /// </summary>
         public CompletionParameters? DefaultCompletionParameters { get; set; }
+
+
+        /// <summary>
+        /// The max token totals, default is 6000.
+        /// </summary>
+        public int MaxTokenTotals { get; set; } = 6000;
     }
 }

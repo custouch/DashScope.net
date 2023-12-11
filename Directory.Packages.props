@@ -5,10 +5,10 @@
   <ItemGroup>
     <!--Unit Test-->
     <PackageVersion Include="Microsoft.Extensions.Configuration.UserSecrets" Version="6.0.1" />
-    <PackageVersion Include="Microsoft.KernelMemory.Abstractions" Version="0.15.231203.1-preview" />
-    <PackageVersion Include="Microsoft.KernelMemory.Core" Version="0.12.231126.1-preview" />
+    <PackageVersion Include="Microsoft.KernelMemory.Abstractions" Version="0.18.231209.1-preview" />
+    <PackageVersion Include="Microsoft.KernelMemory.Core" Version="0.18.231209.1-preview" />
     <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="17.1.0" />
-    <PackageVersion Include="Microsoft.SemanticKernel" Version="1.0.0-rc1" />
+    <PackageVersion Include="Microsoft.SemanticKernel" Version="1.0.0-rc3" />
     <PackageVersion Include="Microsoft.VisualStudio.Validation" Version="17.6.11" />
     <PackageVersion Include="Swashbuckle.AspNetCore" Version="6.5.0" />
     <PackageVersion Include="System.Text.Json" Version="6.0.8" />

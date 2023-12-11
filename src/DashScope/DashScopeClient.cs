@@ -135,5 +135,28 @@ namespace DashScope
 
             return response;
         }
+
+        public async Task<TokenizerResponse> TokenCountsAsync(TokenizerRequest requestBody, CancellationToken cancellationToken = default)
+        {
+            var request = new HttpRequestMessage();
+            request.Headers.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", _apiKey);
+            request.Content = new StringContent(JsonSerializer.Serialize(requestBody), Encoding.UTF8, "application/json");
+            request.RequestUri = new Uri(Defaults.GetTokenizerEndpoint());
+            request.Method = HttpMethod.Post;
+
+            var response = await _client.SendAsync(request, cancellationToken);
+            var content = await response.Content.ReadAsStringAsync();
+
+            var result = JsonSerializer.Deserialize<TokenizerResponse>(content) ?? throw new DashScopeException("Not found Content");
+
+            if (response.IsSuccessStatusCode)
+            {
+                return result;
+            }
+            else
+            {
+                throw new DashScopeException(result.Code, result.Message);
+            }
+        }
     }
 }
