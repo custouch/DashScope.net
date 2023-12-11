@@ -18,9 +18,14 @@ namespace DashScope.Models
     }
     public class CompletionInput
     {
+
+        [JsonPropertyName("prompt")]
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+        public string? Prompt { get; set; }
+
         [JsonPropertyName("messages")]
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
-        public List<Message> Messages { get; set; } = new List<Message>();
+        public List<Message>? Messages { get; set; }
 
     }
     public class CompletionHistoryItem

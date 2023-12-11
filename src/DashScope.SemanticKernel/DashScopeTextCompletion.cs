@@ -78,14 +78,14 @@ namespace DashScope.SemanticKernel
             var response = await _client.GenerationAsync(new CompletionRequest()
             {
                 Input = {
-                    Messages = new List<Message>()
-                    {
+                    Messages =
+                    [
                         new Message()
                         {
                             Role = MessageRole.User,
                             Content = prompt
                         }
-                    }
+                    ]
                 },
                 Model = this._model,
                 Parameters = ToParameters(settings)
@@ -102,14 +102,14 @@ namespace DashScope.SemanticKernel
             {
                 Input =
                 {
-                    Messages = new List<Message>()
-                    {
+                    Messages =
+                    [
                         new Message()
                         {
                             Role = MessageRole.User,
                             Content = prompt
                         }
-                    }
+                    ]
                 },
                 Parameters = ToParameters(settings, true),
                 Model = this._model

@@ -5,10 +5,7 @@ using Microsoft.SemanticKernel.AI.Embeddings;
 using Microsoft.SemanticKernel.Services;
 using System.Diagnostics.CodeAnalysis;
 
-
-#pragma warning disable SKEXP0001 // Type is for evaluation purposes only and is subject to change or removal in future updates. Suppress this diagnostic to proceed.
 public class DashScopeEmbeddingGeneration : ITextEmbeddingGeneration
-#pragma warning restore SKEXP0001 // Type is for evaluation purposes only and is subject to change or removal in future updates. Suppress this diagnostic to proceed.
 {
     private readonly DashScopeClient _client;
     private readonly string _model;

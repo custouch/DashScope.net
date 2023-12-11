@@ -21,5 +21,11 @@ namespace DashScope
         {
             return $"{ApiBase}/{apiVersion}/services/{taskGroup}/{task}/{functionCall}";
         }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
+        public static string GetTokenizerEndpoint() => $"{ApiBase}/v1/tokenizer";
     }
 }
