@@ -18,17 +18,13 @@ namespace Microsoft.SemanticKernel
             string? serviceId = null
             )
         {
-            builder.WithServices(c =>
-            {
-                model ??= DashScopeModels.QWenTurbo;
-                var generation = new DashScopeTextCompletion(apiKey, model, httpClient);
-                c.AddKeyedSingleton<IChatCompletionService>(serviceId, generation);
-                c.AddKeyedSingleton<ITextGenerationService>(serviceId, generation);
-            });
+            model ??= DashScopeModels.QWenTurbo;
+            var generation = new DashScopeTextCompletion(apiKey, model, httpClient);
+            builder.Services.AddKeyedSingleton<IChatCompletionService>(serviceId, generation);
+            builder.Services.AddKeyedSingleton<ITextGenerationService>(serviceId, generation);
             return builder;
         }
 
-#pragma warning disable SKEXP0052 // Type is for evaluation purposes only and is subject to change or removal in future updates. Suppress this diagnostic to proceed.
         public static MemoryBuilder WithDashScopeTextEmbeddingGenerationService(
             this MemoryBuilder builder,
             string apiKey,
@@ -41,6 +37,5 @@ namespace Microsoft.SemanticKernel
 
             return builder;
         }
-#pragma warning restore SKEXP0052 // Type is for evaluation purposes only and is subject to change or removal in future updates. Suppress this diagnostic to proceed.
     }
 }

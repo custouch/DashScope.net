@@ -29,7 +29,7 @@ namespace SK_DashScope.Sample.Controllers
                 return NoContent();
             }
 
-            var chat = kernel.GetService<IChatCompletionService>();
+            var chat = kernel.GetRequiredService<IChatCompletionService>();
             var history = new ChatHistory();
             history.AddUserMessage(input.Text);
 
@@ -45,7 +45,7 @@ namespace SK_DashScope.Sample.Controllers
                 return NoContent();
             }
 
-            var completion = kernel.GetService<ITextGenerationService>();
+            var completion = kernel.GetRequiredService<ITextGenerationService>();
 
             var settings = new PromptExecutionSettings()
             {
@@ -68,7 +68,7 @@ namespace SK_DashScope.Sample.Controllers
                 await Response.CompleteAsync();
             }
 
-            var chat = kernel.GetService<IChatCompletionService>();
+            var chat = kernel.GetRequiredService<IChatCompletionService>();
             var history = new ChatHistory();
             history.AddUserMessage(input.Text);
 
@@ -92,7 +92,7 @@ namespace SK_DashScope.Sample.Controllers
                 return NoContent();
             }
 
-            var completion = kernel.GetService<ITextGenerationService>();
+            var completion = kernel.GetRequiredService<ITextGenerationService>();
             var settings = new DashScopeAIRequestSettings()
             {
                 TopP = 0.5f,
@@ -115,7 +115,7 @@ namespace SK_DashScope.Sample.Controllers
                 await Response.CompleteAsync();
             }
 
-            var completion = kernel.GetService<ITextGenerationService>();
+            var completion = kernel.GetRequiredService<ITextGenerationService>();
 
             var settings = new DashScopeAIRequestSettings();
             var streamingResults = completion.GetStreamingTextContentsAsync(input.Text, settings, cancellationToken: cancellationToken);
