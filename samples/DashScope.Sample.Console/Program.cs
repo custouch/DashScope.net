@@ -7,7 +7,7 @@ var configuration = new ConfigurationBuilder()
                         .AddUserSecrets(typeof(Program).Assembly)
                         .Build();
 
-var client = new DashScopeClient(configuration["DashScope:ApiKey"]);
+var client = new DashScopeClient(configuration["DashScope:ApiKey"]!);
 
 while (true)
 {

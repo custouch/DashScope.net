@@ -1,11 +1,9 @@
 ﻿using DashScope;
 using Microsoft;
 using Microsoft.SemanticKernel;
-using Microsoft.SemanticKernel.AI.Embeddings;
-using Microsoft.SemanticKernel.Services;
-using System.Diagnostics.CodeAnalysis;
+using Microsoft.SemanticKernel.Embeddings;
 
-public class DashScopeEmbeddingGeneration : ITextEmbeddingGeneration
+public class DashScopeEmbeddingGeneration : ITextEmbeddingGenerationService
 {
     private readonly DashScopeClient _client;
     private readonly string _model;

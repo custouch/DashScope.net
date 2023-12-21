@@ -1,9 +1,8 @@
 ﻿using DashScope.Models;
 using Microsoft;
-using Microsoft.SemanticKernel.AI.ChatCompletion;
+using Microsoft.SemanticKernel.ChatCompletion;
 using System.Runtime.CompilerServices;
-using Microsoft.SemanticKernel.AI.TextGeneration;
-using Microsoft.SemanticKernel.AI;
+using Microsoft.SemanticKernel.TextGeneration;
 using Microsoft.SemanticKernel;
 
 namespace DashScope.SemanticKernel

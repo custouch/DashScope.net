@@ -1,17 +1,18 @@
 ﻿using DashScope;
 using DashScope.SemanticKernel;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.SemanticKernel.AI.ChatCompletion;
-using Microsoft.SemanticKernel.AI.Embeddings;
-using Microsoft.SemanticKernel.AI.TextGeneration;
-using Microsoft.SemanticKernel.Plugins.Memory;
+using Microsoft.SemanticKernel;
+using Microsoft.SemanticKernel.ChatCompletion;
+using Microsoft.SemanticKernel.Embeddings;
+using Microsoft.SemanticKernel.Memory;
+using Microsoft.SemanticKernel.TextGeneration;
 
 namespace Microsoft.SemanticKernel
 {
     public static class DashScopeKernelBuilderExtensions
     {
-        public static KernelBuilder WithDashScopeCompletionService(
-            this KernelBuilder builder,
+        public static IKernelBuilder WithDashScopeCompletionService(
+            this IKernelBuilder builder,
             string apiKey,
             string? model = null,
             HttpClient? httpClient = null,
