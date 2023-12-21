@@ -8,7 +8,7 @@
 		<RootNamespace>SK_DashScope.Sample</RootNamespace>
 		<IsPackable>false</IsPackable>
 		<UserSecretsId>ad2543c3-dd77-45e7-adf4-b34d0abd99f9</UserSecretsId>
-		<NoWarn>SKEXP0052</NoWarn>
+		<NoWarn>SKEXP0052;SKEXP0003</NoWarn>
 	</PropertyGroup>
 
 	<ItemGroup>

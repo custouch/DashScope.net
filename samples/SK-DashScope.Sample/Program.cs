@@ -1,5 +1,5 @@
 using Microsoft.SemanticKernel;
-using Microsoft.SemanticKernel.Plugins.Memory;
+using Microsoft.SemanticKernel.Memory;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -14,7 +14,7 @@ builder.Services.AddSwaggerGen();
 
 builder.Services.AddScoped(svc =>
 {
-    var kernel = new KernelBuilder().WithDashScopeCompletionService(builder.Configuration["DashScope:ApiKey"]!)
+    var kernel = Kernel.CreateBuilder().WithDashScopeCompletionService(builder.Configuration["DashScope:ApiKey"]!)
     .Build();
     return kernel;
 });
