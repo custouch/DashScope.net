@@ -47,7 +47,9 @@ namespace DashScope.SemanticKernel
                 Parameters = ToParameters(settings)
             }, cancellationToken);
 
-            return new List<ChatMessageContent>() { new DashScopeChatMessage(response) }.AsReadOnly();
+            var metadata = GetResponseMetadata(response);
+
+            return new List<ChatMessageContent>() { new DashScopeChatMessage(response, metadata) }.AsReadOnly();
         }
 
         public async IAsyncEnumerable<StreamingChatMessageContent> GetStreamingChatMessageContentsAsync(ChatHistory chatHistory, PromptExecutionSettings? executionSettings = null, Kernel? kernel = null, [EnumeratorCancellation] CancellationToken cancellationToken = default)
@@ -65,7 +67,8 @@ namespace DashScope.SemanticKernel
             }, cancellationToken);
             await foreach (var response in responses)
             {
-                yield return new DashScopeStreamingChatMessage(response);
+                var metadata = GetResponseMetadata(response);
+                yield return new DashScopeStreamingChatMessage(response, metadata);
             }
 
         }
@@ -90,7 +93,9 @@ namespace DashScope.SemanticKernel
                 Parameters = ToParameters(settings)
             }, cancellationToken);
 
-            return new List<TextContent>() { new(response.Output.Text) }.AsReadOnly();
+            var metadata = GetResponseMetadata(response);
+
+            return new List<TextContent>() { new(response.Output.Text, metadata: metadata) }.AsReadOnly();
         }
 
         public async IAsyncEnumerable<StreamingTextContent> GetStreamingTextContentsAsync(string prompt, PromptExecutionSettings? executionSettings = null, Kernel? kernel = null, [EnumeratorCancellation] CancellationToken cancellationToken = default)
@@ -115,9 +120,19 @@ namespace DashScope.SemanticKernel
             }, cancellationToken);
             await foreach (var response in responses)
             {
-                yield return new StreamingTextContent(response.Output.Text);
+                var metadata = GetResponseMetadata(response);
+                yield return new StreamingTextContent(response.Output.Text, metadata: metadata);
             }
 
+        }
+
+        private static IReadOnlyDictionary<string, object?> GetResponseMetadata(CompletionResponse response)
+        {
+            return new Dictionary<string, object?>()
+            {
+                [nameof(response.Usage)] = response.Usage,
+                [nameof(response.RequestId)] = response.RequestId
+            };
         }
 
         private static CompletionParameters ToParameters(DashScopeAIRequestSettings? settings, bool? stream = null)
@@ -141,10 +156,22 @@ namespace DashScope.SemanticKernel
 
         private List<Message> ChatHistoryToMessages(ChatHistory chatHistory)
         {
+            if (chatHistory.Count == 1)
+            {
+                return
+                [
+                    new Message()
+                    {
+                        Role = MessageRole.User,
+                        Content = chatHistory[0].Content!
+                    }
+                ];
+            }
+
             return chatHistory.Select(m => new Message()
             {
                 Role = AuthorRoleToMessageRole(m.Role),
-                Content = m.Content
+                Content = m.Content!
             }).ToList();
         }
 

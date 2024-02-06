@@ -127,5 +127,28 @@ namespace SK_DashScope.Sample.Controllers
 
             await Response.CompleteAsync();
         }
+
+        [HttpPost("semantic")]
+        public async Task<IActionResult> SemanticAsync([FromBody] UserInput input, CancellationToken cancellationToken)
+        {
+            if (string.IsNullOrWhiteSpace(input.Text))
+            {
+                return NoContent();
+            }
+
+            var prompt =
+                """
+				翻译以下内容为英文：
+
+				{{$input}}
+				
+				""";
+            var result = await kernel.InvokePromptAsync(prompt, new KernelArguments() { ["input"] = input.Text }, cancellationToken: cancellationToken);
+            var value = result.GetValue<string>();
+            var usage = result.Metadata?["Usage"];
+
+            return Ok(new { value, usage });
+
+        }
     }
 }
