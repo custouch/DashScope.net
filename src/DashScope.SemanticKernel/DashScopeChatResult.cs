@@ -6,14 +6,16 @@ namespace DashScope.SemanticKernel
 {
     public class DashScopeChatMessage : ChatMessageContent
     {
-        public DashScopeChatMessage(CompletionResponse response) : base(AuthorRole.Assistant, response.Output.Text!)
+        public DashScopeChatMessage(CompletionResponse response, IReadOnlyDictionary<string, object?>? metadata = null)
+            : base(AuthorRole.Assistant, response.Output.Text!, metadata: metadata)
         {
 
         }
     }
     public class DashScopeStreamingChatMessage : StreamingChatMessageContent
     {
-        public DashScopeStreamingChatMessage(CompletionResponse response) : base(AuthorRole.Assistant, response.Output.Text!, response)
+        public DashScopeStreamingChatMessage(CompletionResponse response, IReadOnlyDictionary<string, object?>? metadata = null)
+            : base(AuthorRole.Assistant, response.Output.Text!, response, metadata: metadata)
         {
 
         }
