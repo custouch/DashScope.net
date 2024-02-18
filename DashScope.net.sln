@@ -28,9 +28,13 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DashScope.SemanticKernel", 
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SK-DashScope.Sample", "samples\SK-DashScope.Sample\SK-DashScope.Sample.csproj", "{25642B93-E159-49DB-9D90-1C8E309F801C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DashScope.KernelMemory", "src\DashScope.KernelMemory\DashScope.KernelMemory.csproj", "{F1C65D44-DA5F-462E-BCAB-5DA0D1D1D501}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DashScope.KernelMemory", "src\DashScope.KernelMemory\DashScope.KernelMemory.csproj", "{F1C65D44-DA5F-462E-BCAB-5DA0D1D1D501}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DashScope.KernelMemory.Sample", "samples\DashScope.KernelMemory.Sample\DashScope.KernelMemory.Sample.csproj", "{A831DFFF-C778-4C39-8657-802C746BB692}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DashScope.KernelMemory.Sample", "samples\DashScope.KernelMemory.Sample\DashScope.KernelMemory.Sample.csproj", "{A831DFFF-C778-4C39-8657-802C746BB692}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DashVector", "src\DashVector\DashVector.csproj", "{580E981D-49BB-4C34-B4BA-2A1C85B6016D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DashVector.UnitTests", "tests\DashVector.UnitTests\DashVector.UnitTests.csproj", "{FFF43DC0-8591-4817-ABEF-C11598BE6D24}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -66,6 +70,14 @@ Global
 		{A831DFFF-C778-4C39-8657-802C746BB692}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A831DFFF-C778-4C39-8657-802C746BB692}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A831DFFF-C778-4C39-8657-802C746BB692}.Release|Any CPU.Build.0 = Release|Any CPU
+		{580E981D-49BB-4C34-B4BA-2A1C85B6016D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{580E981D-49BB-4C34-B4BA-2A1C85B6016D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{580E981D-49BB-4C34-B4BA-2A1C85B6016D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{580E981D-49BB-4C34-B4BA-2A1C85B6016D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FFF43DC0-8591-4817-ABEF-C11598BE6D24}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FFF43DC0-8591-4817-ABEF-C11598BE6D24}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FFF43DC0-8591-4817-ABEF-C11598BE6D24}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FFF43DC0-8591-4817-ABEF-C11598BE6D24}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -78,6 +90,8 @@ Global
 		{25642B93-E159-49DB-9D90-1C8E309F801C} = {2FDFB5A9-FE06-4822-933E-5D1C6D9160C9}
 		{F1C65D44-DA5F-462E-BCAB-5DA0D1D1D501} = {BB7B834A-464F-4F81-A649-E63AA0C53C24}
 		{A831DFFF-C778-4C39-8657-802C746BB692} = {2FDFB5A9-FE06-4822-933E-5D1C6D9160C9}
+		{580E981D-49BB-4C34-B4BA-2A1C85B6016D} = {BB7B834A-464F-4F81-A649-E63AA0C53C24}
+		{FFF43DC0-8591-4817-ABEF-C11598BE6D24} = {ED489DAA-351A-43F9-A3DF-7DBEBF7677CD}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {4DB8E739-7470-4879-9DCE-E9BACBA58715}
