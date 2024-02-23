@@ -36,7 +36,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DashVector", "src\DashVecto
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DashVector.UnitTests", "tests\DashVector.UnitTests\DashVector.UnitTests.csproj", "{FFF43DC0-8591-4817-ABEF-C11598BE6D24}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DashVector.Sample", "DashVector.Sample\DashVector.Sample.csproj", "{773C269D-93BE-45E7-8A37-A6AC49A71E32}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DashVector.Sample", "samples\DashVector.Sample\DashVector.Sample.csproj", "{0B09CBA0-491C-49B5-A498-940AEB7210DF}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -80,10 +80,10 @@ Global
 		{FFF43DC0-8591-4817-ABEF-C11598BE6D24}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FFF43DC0-8591-4817-ABEF-C11598BE6D24}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FFF43DC0-8591-4817-ABEF-C11598BE6D24}.Release|Any CPU.Build.0 = Release|Any CPU
-		{773C269D-93BE-45E7-8A37-A6AC49A71E32}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{773C269D-93BE-45E7-8A37-A6AC49A71E32}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{773C269D-93BE-45E7-8A37-A6AC49A71E32}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{773C269D-93BE-45E7-8A37-A6AC49A71E32}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0B09CBA0-491C-49B5-A498-940AEB7210DF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0B09CBA0-491C-49B5-A498-940AEB7210DF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0B09CBA0-491C-49B5-A498-940AEB7210DF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0B09CBA0-491C-49B5-A498-940AEB7210DF}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -98,7 +98,7 @@ Global
 		{A831DFFF-C778-4C39-8657-802C746BB692} = {2FDFB5A9-FE06-4822-933E-5D1C6D9160C9}
 		{580E981D-49BB-4C34-B4BA-2A1C85B6016D} = {BB7B834A-464F-4F81-A649-E63AA0C53C24}
 		{FFF43DC0-8591-4817-ABEF-C11598BE6D24} = {ED489DAA-351A-43F9-A3DF-7DBEBF7677CD}
-		{773C269D-93BE-45E7-8A37-A6AC49A71E32} = {2FDFB5A9-FE06-4822-933E-5D1C6D9160C9}
+		{0B09CBA0-491C-49B5-A498-940AEB7210DF} = {2FDFB5A9-FE06-4822-933E-5D1C6D9160C9}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {4DB8E739-7470-4879-9DCE-E9BACBA58715}
