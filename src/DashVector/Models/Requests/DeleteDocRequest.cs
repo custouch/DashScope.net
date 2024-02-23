@@ -11,14 +11,13 @@ namespace DashVector.Models.Requests
     {
         [JsonPropertyName("ids")]
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
-        public List<string> Ids { get; set; }
+        public List<string>? Ids { get; set; }
 
         [JsonPropertyName("partition")]
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
-        public string Partition { get; set; }
+        public string? Partition { get; set; }
 
         [JsonPropertyName("delete_all")]
-        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
-        public bool DeleteAll { get; set; }
+        public bool DeleteAll { get; set; } = false;
     }
 }

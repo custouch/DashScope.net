@@ -7,15 +7,9 @@ using System.Threading.Tasks;
 
 namespace DashVector.Models.Responses
 {
-    public class Response<T>
+    public class NormalResponse<T> : ResponseBase<int>
     {
         [JsonPropertyName("request_id")]
-        public string Code { get; set; }
-
-        [JsonPropertyName("code")]
-        public string Message { get; set; }
-
-        [JsonPropertyName("message")]
         public string RequestId { get; set; }
 
         [JsonPropertyName("output")]

@@ -12,20 +12,20 @@ namespace DashVector.Models.Requests
     {
         [JsonPropertyName("vector")]
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
-        public Vector<float> vector { get; set; }
+        public List<float>? vector { get; set; }
 
         [JsonPropertyName("sparse_vector")]
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
-        public SortedDictionary<int, float> SparseVector { get; set; }
+        public SortedDictionary<int, float>? SparseVector { get; set; }
 
 
         [JsonPropertyName("id")]
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
-        public string Id { get; set; }
+        public string? Id { get; set; }
 
         [JsonPropertyName("filter")]
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
-        public string Filter { get; set; }
+        public string? Filter { get; set; }
 
         [JsonPropertyName("topk")]
         public int TopK { get; set; } = 10;
@@ -35,6 +35,6 @@ namespace DashVector.Models.Requests
 
         [JsonPropertyName("partition")]
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
-        public string Partition { get; set; }
+        public string? Partition { get; set; }
     }
 }

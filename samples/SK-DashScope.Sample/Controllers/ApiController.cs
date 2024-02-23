@@ -138,11 +138,12 @@ namespace SK_DashScope.Sample.Controllers
 
             var prompt =
                 """
-				翻译以下内容为英文：
 
-				{{$input}}
-				
-				""";
+                翻译以下内容为英文：
+
+				{ {$input} }
+
+            """;
             var result = await kernel.InvokePromptAsync(prompt, new KernelArguments() { ["input"] = input.Text }, cancellationToken: cancellationToken);
             var value = result.GetValue<string>();
             var usage = result.Metadata?["Usage"];

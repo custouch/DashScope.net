@@ -5,11 +5,11 @@ using System.Text;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
-namespace DashVector.Models
+namespace DashVector.Models.Requests
 {
-    public class PartitionStats
+    public class CreatePartitionRequest
     {
-        [JsonPropertyName("total_doc_count")]
-        public string TotalDocCount { get; set; }
+        [JsonPropertyName("name")]
+        public string name { get; set; }
     }
 }

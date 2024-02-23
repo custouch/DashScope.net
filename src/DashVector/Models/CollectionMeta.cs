@@ -16,27 +16,27 @@ namespace DashVector.Models
         /// Collection Name
         /// </summary>
         [Required]
-        [JsonPropertyName("Name")]
+        [JsonPropertyName("name")]
         public string Name { get; set; }
 
         /// <summary>
         /// Collection Dimension(1,20000]
         /// </summary>
         [Required]
-        [JsonPropertyName("Dimension")]
+        [JsonPropertyName("dimension")]
         public int Dimension { get; set; }
 
         /// <summary>
         /// Daata type, Float(default)/INT
         /// </summary>
         [JsonPropertyName("dtype")]
-        public Type DataType { get; set; } = typeof(float);
+        public string DataType { get; set; } = CollectionInfo.DataType.FLOAT;
 
         /// <summary>
         /// Distance measurement
         /// </summary>
-        [JsonPropertyName("Metric")]
-        public Metric Metric { get; set; } = Metric.Cosine;
+        [JsonPropertyName("metric")]
+        public string Metric { get; set; } = CollectionInfo.Metric.Cosine;
 
         /// <summary>
         /// Status
@@ -51,9 +51,9 @@ namespace DashVector.Models
         public Dictionary<string, object> FiledSchema { get; set; }
 
         /// <summary>
-        /// Partition information
+        /// PartitionName information
         /// </summary>
         [JsonPropertyName("partitions")]
-        public Dictionary<string, Status> PartitionStatus { get; set; }
+        public Dictionary<string, string> PartitionStatus { get; set; }
     }
 }

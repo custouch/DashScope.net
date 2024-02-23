@@ -10,11 +10,12 @@ namespace DashVector.Models
     public class CollectionStats
     {
         [JsonPropertyName("total_doc_count")]
-        public long TotalDocCount { get; set; }
+        public string TotalDocCount { get; set; }
 
         [JsonPropertyName("index_completeness")]
         public float IndexCompleteness { get; set; }
 
+        [JsonPropertyName("partitions")]
         public Dictionary<string, PartitionStats> Partitions { get; set; }
     }
 }

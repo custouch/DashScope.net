@@ -28,12 +28,12 @@ namespace DashVector
                         urlBuilder.Append($"/{function}");
                     }
                 }
-                else if (ids != null)
+                if (ids != null)
                 {
-                    urlBuilder.Append($"/docs?ids={string.Join(",", ids)}");
+                    urlBuilder.Append($"?ids={string.Join(",", ids)}");
                     if (!string.IsNullOrEmpty(partitionName))
                     {
-                        urlBuilder.Append($"&partition={partitionName}");
+                        urlBuilder.Append($"&partitionName={partitionName}");
                     }
                 }
             }

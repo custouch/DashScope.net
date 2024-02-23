@@ -9,11 +9,14 @@ namespace DashVector.Models.Requests
 {
     public class InsertDocRequest
     {
+        [JsonPropertyName("collectionName")]
+        public string CollectionName { get; set; }
+
         [JsonPropertyName("docs")]
         public List<Doc> Docs { get; set; }
 
         [JsonPropertyName("partition")]
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
-        public string Partition { get; set; }
+        public string? Partition { get; set; }
     }
 }

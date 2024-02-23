@@ -6,20 +6,20 @@ using System.Threading.Tasks;
 
 namespace DashVector.Models
 {
-    public class CollectionInfo
+    public static class CollectionInfo
     {
-        public enum DataType
+        public static class DataType
         {
-            FLOAT,
-            INT
+            public const string FLOAT = "FLOAT";
+            public const string INT = "INT";
         }
 
-        public enum Metric
+        public static class Metric
         {
 
-            Euclidean,
-            Dotproduct,
-            Cosine
+            public const string Euclidean = "euclidean";
+            public const string Dotproduct = "dotproduct";
+            public const string Cosine = "cosine";
         }
 
     }

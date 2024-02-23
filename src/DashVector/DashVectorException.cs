@@ -9,13 +9,13 @@ namespace DashVector
 {
     public class DashVectorException : Exception
     {
-        public string Code { get; set; } = string.Empty;
+        public int Code { get; set; }
 
         public DashVectorException(string message) : base(message)
         {
         }
 
-        public DashVectorException(string code, string message) : base(message)
+        public DashVectorException(int code, string message) : base(message)
         {
             this.Code = code;
         }
@@ -24,7 +24,7 @@ namespace DashVector
         {
         }
 
-        public DashVectorException(string code, string message, Exception innerException) : base(message, innerException)
+        public DashVectorException(int code, string message, Exception innerException) : base(message, innerException)
         {
             this.Code = code;
         }

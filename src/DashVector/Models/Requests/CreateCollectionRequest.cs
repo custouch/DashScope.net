@@ -6,28 +6,22 @@ namespace DashVector.Models.Requests
 
     public class CreateCollectionRequest
     {
-        [JsonPropertyName("Name")]
+        [JsonPropertyName("name")]
         public string Name { get; set; }
 
         [JsonPropertyName("dimension")]
         public int Dimension { get; set; }
 
-        [JsonPropertyName("dataType")]
-        public CollectionInfo.DataType DataType { get; set; }
+        [JsonPropertyName("dtype")]
+        public string DataType { get; set; } = CollectionInfo.DataType.FLOAT;
 
         [JsonPropertyName("metric")]
-        public CollectionInfo.Metric Metric { get; set; }
+        public string Metric { get; set; } = CollectionInfo.Metric.Cosine;
 
-        [JsonPropertyName("fieldsSchema")]
-        public Dictionary<string, FieldType> FieldsSchema { get; set; }
+        [JsonPropertyName("fields_schema")]
+        public Dictionary<string, FieldType>? FieldsSchema { get; set; }
 
-        [JsonPropertyName("extraParams")]
-        public Dictionary<string, string> ExtraParams { get; set; }
-
-        [JsonPropertyName("timeout")]
-        public int Timeout { get; set; }
-
-
-
+        [JsonPropertyName("extra_params")]
+        public Dictionary<string, string>? ExtraParams { get; set; }
     }
 }
