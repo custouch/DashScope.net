@@ -8,10 +8,17 @@ using System.Text.Json;
 
 namespace DashVector
 {
+    /// <summary>
+    /// DashVector Http Client
+    /// <see href="https://help.aliyun.com/document_detail/2510275.html?spm=a2c4g.2510280.0.0.51607c08tlxYWE"/>
+    /// </summary>
     public class DashVectorClient
     {
+        const string AUTH_TOKEN = "dashvector-auth-token";
+
         private readonly string _apiKey;
-        public readonly string _endPoint;
+        private readonly string _endPoint;
+
         private readonly HttpClient _client;
 
         public DashVectorClient(string apiKey, string endPoint, HttpClient? client = null)
@@ -22,189 +29,306 @@ namespace DashVector
         }
 
         #region CollectionService
-
-        public async Task<NormalResponse<object>> CreateCollectionAsync(CreateCollectionRequest request, CancellationToken cancellationToken = default)
+        /// <summary>
+        /// 新建Collection
+        /// </summary>
+        /// <param name="request"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        public async Task<ResponseBase> CreateCollectionAsync(CreateCollectionRequest request, CancellationToken cancellationToken = default)
         {
             var apiEndpoint = Defaults.GetApiEndpoint(_endPoint);
 
             var response = await RequestAsync(HttpMethod.Post, apiEndpoint, request, cancellationToken);
 
-            return await HandleResponseAsync<object>(response);
+            return await HandleResponseAsync<ResponseBase>(response);
 
         }
 
-        public async Task<NormalResponse<CollectionMeta>> DescribeCollectionAsync(string name, CancellationToken cancellationToken = default)
+        /// <summary>
+        /// 描述Collection
+        /// </summary>
+        /// <param name="name"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        public async Task<ResponseBase<CollectionMeta>> DescribeCollectionAsync(string name, CancellationToken cancellationToken = default)
         {
             var apiEndPoint = Defaults.GetApiEndpoint(endpoint: _endPoint, collectionName: name);
 
-            var response = await RequestAsync<object>(HttpMethod.Get, apiEndPoint, cancellationToken);
+            var response = await RequestAsync(HttpMethod.Get, apiEndPoint, cancellationToken);
 
-            return await HandleResponseAsync<CollectionMeta>(response);
+            return await HandleResponseAsync<ResponseBase<CollectionMeta>>(response);
 
         }
 
-        public async Task<NormalResponse<List<string>>> GetCollectionListAsync()
+        /// <summary>
+        /// 获取Collection列表
+        /// </summary>
+        /// <returns></returns>
+        public async Task<ResponseBase<List<string>>> GetCollectionListAsync(CancellationToken cancellationToken = default)
         {
             var apiEndpoint = Defaults.GetApiEndpoint(_endPoint);
 
-            var response = await RequestAsync<object>(HttpMethod.Get, apiEndpoint);
+            var response = await RequestAsync(HttpMethod.Get, apiEndpoint, cancellationToken);
 
-            return await HandleResponseAsync<List<string>>(response);
+            return await HandleResponseAsync<ResponseBase<List<string>>>(response);
         }
 
-        public async Task<NormalResponse<CollectionStats>> StatsCollectionAsync(string name, CancellationToken cancellationToken = default)
+        /// <summary>
+        /// 统计Collection
+        /// </summary>
+        /// <param name="name"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        public async Task<ResponseBase<CollectionStats>> StatsCollectionAsync(string name, CancellationToken cancellationToken = default)
         {
-            List<string> functionNames = new List<string>(new string[] { FunctionNames.Stats });
+            List<string> functionNames = [FunctionNames.Stats];
             var apiEndPoint = Defaults.GetApiEndpoint(_endPoint, collectionName: name, functionNames: functionNames);
 
             var response = await RequestAsync(HttpMethod.Get, apiEndPoint, cancellationToken);
 
-            return await HandleResponseAsync<CollectionStats>(response);
+            return await HandleResponseAsync<ResponseBase<CollectionStats>>(response);
 
         }
 
-        public async Task<NormalResponse<object>> DeleteCollectionAsync(string name)
+        /// <summary>
+        /// 删除Collection
+        /// </summary>
+        /// <param name="name"></param>
+        /// <returns></returns>
+        public async Task<ResponseBase> DeleteCollectionAsync(string name, CancellationToken cancellationToken = default)
         {
             var apiEndpoint = Defaults.GetApiEndpoint(_endPoint, collectionName: name);
 
-            var response = await RequestAsync<object>(HttpMethod.Delete, apiEndpoint);
+            var response = await RequestAsync(HttpMethod.Delete, apiEndpoint, cancellationToken);
 
-            return await HandleResponseAsync<object>(response);
+            return await HandleResponseAsync<ResponseBase>(response);
         }
 
         #endregion
 
         #region DocService
 
-        public async Task<NormalResponse<object>> DeleteDocAsync(DeleteDocRequest deleteDocRequest, string collectionName, CancellationToken cancellationToken = default)
+        /// <summary>
+        /// 删除Doc
+        /// </summary>
+        /// <param name="deleteDocRequest"></param>
+        /// <param name="collectionName"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        public async Task<ResponseBase> DeleteDocAsync(DeleteDocRequest deleteDocRequest, string collectionName, CancellationToken cancellationToken = default)
         {
-            List<string> functionNames = new List<string>(new string[] { FunctionNames.Docs });
+            List<string> functionNames = [FunctionNames.Docs];
 
             var apiEndpoint = Defaults.GetApiEndpoint(endpoint: _endPoint, collectionName: collectionName, functionNames: functionNames);
 
             var response = await RequestAsync(HttpMethod.Delete, apiEndpoint, deleteDocRequest, cancellationToken);
 
-            return await HandleResponseAsync<object>(response);
+            return await HandleResponseAsync<ResponseBase>(response);
         }
 
-        public async Task<NormalResponse<Dictionary<string, Doc>>> FetchDocAsync(FetchDocRequest fetchDocRequest, string collectionName, CancellationToken cancellationToken = default)
+        /// <summary>
+        /// 获取Doc
+        /// </summary>
+        /// <param name="fetchDocRequest"></param>
+        /// <param name="collectionName"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        public async Task<ResponseBase<Dictionary<string, Doc>>> FetchDocAsync(FetchDocRequest fetchDocRequest, string collectionName, CancellationToken cancellationToken = default)
         {
-            List<string> functionNames = new List<string>(new string[] { FunctionNames.Docs });
+            List<string> functionNames = [FunctionNames.Docs];
 
-            var apiEndpoint = Defaults.GetApiEndpoint(endpoint: _endPoint, collectionName: collectionName, functionNames: functionNames, ids: fetchDocRequest.Ids, partitionName: fetchDocRequest.PartitionName);
+            Dictionary<string, string> query = new()
+            {
+                ["ids"] = string.Join(",", fetchDocRequest.Ids)
+            };
+            if (fetchDocRequest.PartitionName != null)
+            {
+                query["partitionName"] = fetchDocRequest.PartitionName;
+            }
+
+            var apiEndpoint = Defaults.GetApiEndpoint(endpoint: _endPoint, collectionName: collectionName, functionNames: functionNames, query: query);
 
             var response = await RequestAsync(HttpMethod.Get, apiEndpoint, cancellationToken);
 
-            return await HandleResponseAsync<Dictionary<string, Doc>>(response);
+            return await HandleResponseAsync<ResponseBase<Dictionary<string, Doc>>>(response);
         }
 
-        public async Task<NormalResponse<object>> InsertDocAsync(InsertDocRequest request, string collectionName, CancellationToken cancellationToken = default)
+        /// <summary>
+        /// 插入Doc
+        /// </summary>
+        /// <param name="request"></param>
+        /// <param name="collectionName"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        public async Task<ResponseBase> InsertDocAsync(InsertDocRequest request, string collectionName, CancellationToken cancellationToken = default)
         {
-            List<string> functionNames = new List<string>(new string[] { FunctionNames.Docs });
+            List<string> functionNames = [FunctionNames.Docs];
             var apiEndpoint = Defaults.GetApiEndpoint(endpoint: _endPoint, collectionName: collectionName, functionNames: functionNames);
 
             var response = await RequestAsync(HttpMethod.Post, apiEndpoint, request, cancellationToken);
 
-            return await HandleResponseAsync<object>(response);
+            return await HandleResponseAsync<ResponseBase>(response);
         }
 
-        public async Task<NormalResponse<List<Doc>>> QueryDocAsync(QueryDocRequest queryDocRequest, string collectionName, CancellationToken cancellationToken = default)
+        /// <summary>
+        /// 检索Doc
+        /// </summary>
+        /// <param name="queryDocRequest"></param>
+        /// <param name="collectionName"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        public async Task<ResponseBase<List<Doc>>> QueryDocAsync(QueryDocRequest queryDocRequest, string collectionName, CancellationToken cancellationToken = default)
         {
-            List<string> functionNames = new List<string>(new string[] { FunctionNames.Query });
+            List<string> functionNames = [FunctionNames.Query];
             var apiEndpoint = Defaults.GetApiEndpoint(endpoint: _endPoint, collectionName: collectionName, functionNames: functionNames);
 
             var response = await RequestAsync(HttpMethod.Post, apiEndpoint, queryDocRequest, cancellationToken);
 
-            return await HandleResponseAsync<List<Doc>>(response);
+            return await HandleResponseAsync<ResponseBase<List<Doc>>>(response);
         }
 
-        public async Task<NormalResponse<object>> UpdateDocAsync(InsertDocRequest updateDocRequest, string collectionName, CancellationToken cancellationToken = default)
+        /// <summary>
+        /// 更新Doc
+        /// </summary>
+        /// <param name="updateDocRequest"></param>
+        /// <param name="collectionName"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        public async Task<ResponseBase> UpdateDocAsync(UpdateDocRequest updateDocRequest, string collectionName, CancellationToken cancellationToken = default)
         {
-            List<string> functionNames = new List<string>(new string[] { FunctionNames.Docs });
+            List<string> functionNames = [FunctionNames.Docs];
             var apiEndpoint = Defaults.GetApiEndpoint(endpoint: _endPoint, collectionName: collectionName, functionNames: functionNames);
 
             var response = await RequestAsync(HttpMethod.Put, apiEndpoint, updateDocRequest, cancellationToken);
 
-            return await HandleResponseAsync<object>(response);
+            return await HandleResponseAsync<ResponseBase>(response);
         }
 
-        public async Task<NormalResponse<object>> UpsertDocAsync(InsertDocRequest updateDocRequest, string collectionName, CancellationToken cancellationToken = default)
+        /// <summary>
+        /// 插入或者更新Doc
+        /// </summary>
+        /// <param name="updateDocRequest"></param>
+        /// <param name="collectionName"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        public async Task<ResponseBase> UpsertDocAsync(UpsertDocRequest updateDocRequest, string collectionName, CancellationToken cancellationToken = default)
         {
-            List<string> functionNames = new List<string>(new string[] { FunctionNames.Docs, FunctionNames.Upsert });
+            List<string> functionNames = [FunctionNames.Docs, FunctionNames.Upsert];
 
             var apiEndpoint = Defaults.GetApiEndpoint(endpoint: _endPoint, collectionName: collectionName, functionNames: functionNames);
 
             var response = await RequestAsync(HttpMethod.Post, apiEndpoint, updateDocRequest, cancellationToken);
 
-            return await HandleResponseAsync<object>(response);
+            return await HandleResponseAsync<ResponseBase>(response);
         }
 
         #endregion
 
         #region PartitionService
 
-        public async Task<NormalResponse<object>> CreatePartitionAsync(CreatePartitionRequest request, string collectionName, CancellationToken cancellationToken = default)
+        /// <summary>
+        /// 创建Partition
+        /// </summary>
+        /// <param name="request"></param>
+        /// <param name="collectionName"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        public async Task<ResponseBase> CreatePartitionAsync(CreatePartitionRequest request, string collectionName, CancellationToken cancellationToken = default)
         {
-            List<string> functionName = new List<string>(new string[] { FunctionNames.Partitions });
+            List<string> functionName = [FunctionNames.Partitions];
 
             var apiEndpoint = Defaults.GetApiEndpoint(endpoint: _endPoint, collectionName: collectionName, functionNames: functionName);
 
             var response = await RequestAsync(HttpMethod.Post, apiEndpoint, request, cancellationToken);
 
-            return await HandleResponseAsync<object>(response);
+            return await HandleResponseAsync<ResponseBase>(response);
         }
 
-        public async Task<NormalResponse<object>> DeletePartitionAsync(string collectionName, string partitionName, CancellationToken cancellationToken = default)
+        /// <summary>
+        /// 删除Partition
+        /// </summary>
+        /// <param name="collectionName"></param>
+        /// <param name="partitionName"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        public async Task<ResponseBase> DeletePartitionAsync(string collectionName, string partitionName, CancellationToken cancellationToken = default)
         {
-            List<string> functionName = new List<string>(new string[] { FunctionNames.Partitions, partitionName });
+            List<string> functionName = [FunctionNames.Partitions, partitionName];
 
             var apiEndpoint = Defaults.GetApiEndpoint(endpoint: _endPoint, collectionName: collectionName, functionNames: functionName);
 
             var response = await RequestAsync(HttpMethod.Delete, apiEndpoint, cancellationToken);
 
-            return await HandleResponseAsync<object>(response);
+            return await HandleResponseAsync<ResponseBase>(response);
         }
 
-        public async Task<NormalResponse<string>> DescribePartitionAsync(string collectionName, string partitionName, CancellationToken cancellationToken = default)
+        /// <summary>
+        /// 描述Partition
+        /// </summary>
+        /// <param name="collectionName"></param>
+        /// <param name="partitionName"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        public async Task<ResponseBase<string>> DescribePartitionAsync(string collectionName, string partitionName, CancellationToken cancellationToken = default)
         {
-            List<string> functionNames = new List<string>(new string[] { FunctionNames.Partitions, partitionName });
+            List<string> functionNames = [FunctionNames.Partitions, partitionName];
             var apiEndpoint = Defaults.GetApiEndpoint(endpoint: _endPoint, collectionName: collectionName, functionNames: functionNames);
 
             var response = await RequestAsync(HttpMethod.Get, apiEndpoint, cancellationToken);
 
-            return await HandleResponseAsync<string>(response);
+            return await HandleResponseAsync<ResponseBase<string>>(response);
         }
 
-        public async Task<NormalResponse<List<string>>> ListPartitionsAsync(string collectionName, CancellationToken cancellationTokenn = default)
+        /// <summary>
+        /// 获取Partition列表
+        /// </summary>
+        /// <param name="collectionName"></param>
+        /// <param name="cancellationTokenn"></param>
+        /// <returns></returns>
+        public async Task<ResponseBase<List<string>>> ListPartitionsAsync(string collectionName, CancellationToken cancellationTokenn = default)
         {
-            List<string> functionNames = new List<string>(new string[] { FunctionNames.Partitions });
+            List<string> functionNames = [FunctionNames.Partitions];
             var apiEndpoint = Defaults.GetApiEndpoint(endpoint: _endPoint, collectionName: collectionName, functionNames: functionNames);
 
             var response = await RequestAsync(HttpMethod.Get, apiEndpoint, apiEndpoint, cancellationTokenn);
 
-            return await HandleResponseAsync<List<string>>(response);
+            return await HandleResponseAsync<ResponseBase<List<string>>>(response);
         }
 
-        public async Task<NormalResponse<PartitionStats>> StatesPartitionAsync(string collectionName, string partitionName, CancellationToken cancellationToken = default)
+        /// <summary>
+        /// 统计Partition
+        /// </summary>
+        /// <param name="collectionName"></param>
+        /// <param name="partitionName"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        public async Task<ResponseBase<PartitionStats>> StatesPartitionAsync(string collectionName, string partitionName, CancellationToken cancellationToken = default)
         {
-            List<string> functionNames = new List<string>(new string[] { FunctionNames.Partitions, partitionName, FunctionNames.Stats });
+            List<string> functionNames = [FunctionNames.Partitions, partitionName, FunctionNames.Stats];
             var apiEndpoint = Defaults.GetApiEndpoint(endpoint: _endPoint, collectionName: collectionName, functionNames: functionNames);
 
             var response = await RequestAsync(HttpMethod.Get, apiEndpoint, cancellationToken);
 
-            return await HandleResponseAsync<PartitionStats>(response);
+            return await HandleResponseAsync<ResponseBase<PartitionStats>>(response);
         }
 
         #endregion
 
-        public async Task<HttpResponseMessage> RequestAsync<TRequest>(HttpMethod method, string ApiEndPoint, TRequest requestBody = default, CancellationToken cancellationToken = default)
+        private async Task<HttpResponseMessage> RequestAsync(HttpMethod method, string ApiEndPoint, CancellationToken cancellationToken = default)
+        {
+            return await RequestAsync<object>(method, ApiEndPoint, null, cancellationToken);
+        }
+
+        private async Task<HttpResponseMessage> RequestAsync<TRequest>(HttpMethod method, string ApiEndPoint, TRequest? requestBody = null, CancellationToken cancellationToken = default)
+            where TRequest : class
         {
             var request = new HttpRequestMessage();
-            request.Headers.Add("dashvector-auth-token", _apiKey);
+            request.Headers.Add(AUTH_TOKEN, _apiKey);
             request.RequestUri = new Uri(ApiEndPoint);
             request.Method = method;
 
-            if (method == HttpMethod.Post || method == HttpMethod.Put)
+            if (requestBody != null)
             {
                 request.Content = new StringContent(JsonSerializer.Serialize(requestBody), Encoding.UTF8, "application/json");
             }
@@ -214,44 +338,28 @@ namespace DashVector
             return response;
         }
 
-        public async Task<NormalResponse<T>> HandleResponseAsync<T>(HttpResponseMessage response)
+        private async Task<T> HandleResponseAsync<T>(HttpResponseMessage response) where T : ResponseBase
         {
-            var content = await response.Content.ReadAsStringAsync();
-
-            var result = new NormalResponse<T>();
-
             try
             {
-                result = JsonSerializer.Deserialize<NormalResponse<T>>(content) ?? throw new DashVectorException("Not found Content");
-            }
-            catch (JsonException)
-            {
-                try
-                {
-                    ErrorResponse errorResponse = JsonSerializer.Deserialize<ErrorResponse>(content) ?? throw new DashVectorException("Not found Content");
-                    result = new NormalResponse<T>()
-                    {
-                        Code = errorResponse.HttpStatusCode,
-                        Message = $"dashVector internal error:{errorResponse.Message}",
-                        RequestId = errorResponse.RequestId,
-                    };
-                }
-                catch (JsonException)
-                {
-                    throw new DashVectorException("JsonException Error");
-                }
-            }
+                var content = await response.Content.ReadAsStringAsync();
 
-            if (response.IsSuccessStatusCode)
-            {
+                response.EnsureSuccessStatusCode();
+
+                var result = JsonSerializer.Deserialize<T>(content)
+                        ?? throw new DashVectorException("Failed to deserialize response");
+
+                if (result.Code != 0)
+                {
+                    throw new DashVectorException(result.Code, result.Message);
+                }
+
                 return result;
             }
-            else
+            catch (Exception ex)
             {
-                throw new DashVectorException(result.Code, result.Message);
+                throw new DashVectorException(ex.Message);
             }
         }
-
-
     }
 }

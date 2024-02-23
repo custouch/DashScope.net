@@ -18,6 +18,7 @@ namespace DashVector.Models.Requests
         public string? Partition { get; set; }
 
         [JsonPropertyName("delete_all")]
-        public bool DeleteAll { get; set; } = false;
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+        public bool? DeleteAll { get; set; } = false;
     }
 }

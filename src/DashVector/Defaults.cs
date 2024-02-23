@@ -8,45 +8,37 @@ namespace DashVector
 {
     public class Defaults
     {
-        public static string ApiBase = "https:/";
 
         /// <summary>
-        /// 获取API
+        /// 获取API Endpoint
         /// </summary>
-        public static string GetApiEndpoint(string endpoint, string apiVersion = "v1", string? collectionName = null, List<string>? functionNames = null, List<string>? ids = null, string? partitionName = null)
+        public static string GetApiEndpoint(string endpoint, string apiVersion = "v1", string? collectionName = null, List<string>? functionNames = null, Dictionary<string, string>? query = null)
         {
-            StringBuilder urlBuilder = new StringBuilder($"{ApiBase}/{endpoint}/{apiVersion}/collections");
+            StringBuilder urlBuilder = new($"https://{endpoint}/{apiVersion}/collections");
 
+            var path = new List<string>();
             if (!string.IsNullOrEmpty(collectionName))
             {
-                urlBuilder.Append($"/{collectionName}");
+                path.Add(collectionName);
+            }
 
-                if (functionNames != null && functionNames.Count > 0)
-                {
-                    foreach (var function in functionNames)
-                    {
-                        urlBuilder.Append($"/{function}");
-                    }
-                }
-                if (ids != null)
-                {
-                    urlBuilder.Append($"?ids={string.Join(",", ids)}");
-                    if (!string.IsNullOrEmpty(partitionName))
-                    {
-                        urlBuilder.Append($"&partitionName={partitionName}");
-                    }
-                }
-            }
-            else if (functionNames != null && functionNames.Count > 0)
+            if (functionNames?.Count > 0)
             {
-                foreach (var function in functionNames)
-                {
-                    urlBuilder.Append($"/{function}");
-                }
+                path.AddRange(functionNames);
             }
+
+            if (path.Count > 0)
+            {
+                urlBuilder.Append($"/{string.Join("/", path)}");
+            }
+
+            if (query?.Count > 0)
+            {
+                urlBuilder.Append($"?{string.Join("&", query.Select(x => $"{x.Key}={x.Value}"))}");
+            }
+
 
             return urlBuilder.ToString();
         }
     }
-
 }

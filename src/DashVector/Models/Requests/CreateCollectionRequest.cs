@@ -13,7 +13,7 @@ namespace DashVector.Models.Requests
         public int Dimension { get; set; }
 
         [JsonPropertyName("dtype")]
-        public string DataType { get; set; } = CollectionInfo.DataType.FLOAT;
+        public DataType DataType { get; set; } = DataType.FLOAT;
 
         [JsonPropertyName("metric")]
         public string Metric { get; set; } = CollectionInfo.Metric.Cosine;

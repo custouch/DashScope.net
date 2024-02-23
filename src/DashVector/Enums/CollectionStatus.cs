@@ -4,9 +4,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DashVector.Models.Requests
+namespace DashVector.Enums
 {
-    public class UpsertDocRequest
+    public enum CollectionStatus
     {
+        INITIALIZED,
+        SERVING,
+        DROPPING,
+        ERROR
     }
 }

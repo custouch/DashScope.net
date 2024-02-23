@@ -10,6 +10,7 @@ namespace DashVector.Models
     public class PartitionStats
     {
         [JsonPropertyName("total_doc_count")]
-        public string TotalDocCount { get; set; }
+        [JsonConverter(typeof(LongToStringConverter))]
+        public long TotalDocCount { get; set; }
     }
 }

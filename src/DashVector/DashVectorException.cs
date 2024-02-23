@@ -19,18 +19,5 @@ namespace DashVector
         {
             this.Code = code;
         }
-
-        public DashVectorException(string message, Exception innerException) : base(message, innerException)
-        {
-        }
-
-        public DashVectorException(int code, string message, Exception innerException) : base(message, innerException)
-        {
-            this.Code = code;
-        }
-
-        protected DashVectorException(SerializationInfo info, StreamingContext context) : base(info, context)
-        {
-        }
     }
 }
