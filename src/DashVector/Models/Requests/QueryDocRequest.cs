@@ -12,7 +12,7 @@ namespace DashVector.Models.Requests
     {
         [JsonPropertyName("vector")]
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
-        public List<float>? vector { get; set; }
+        public float[]? Vector { get; set; }
 
         [JsonPropertyName("sparse_vector")]
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
