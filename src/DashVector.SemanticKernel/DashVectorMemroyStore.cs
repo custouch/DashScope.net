@@ -223,10 +223,11 @@ namespace DashVector.SemanticKernel
             await client.UpsertDocAsync(new Models.Requests.UpsertDocRequest()
             {
                 Docs = [
-                     new Doc(){
-                          Id = id,
-                          Fields = ToFieldValues(record.Metadata),
-                          Vector = record.Embedding.ToArray()
+                     new Doc()
+                     {
+                         Id = id,
+                         Fields = ToFieldValues(record.Metadata),
+                         Vector = record.Embedding.ToArray()
                      }
                 ]
             }, collectionName, cancellationToken);
