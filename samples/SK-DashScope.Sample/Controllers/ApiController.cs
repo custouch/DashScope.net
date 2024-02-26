@@ -6,6 +6,7 @@ using SK_DashScope.Sample.Models;
 using System.Text;
 using DashScope.SemanticKernel;
 using Microsoft.SemanticKernel.TextGeneration;
+using Microsoft.SemanticKernel.Memory;
 
 namespace SK_DashScope.Sample.Controllers
 {
@@ -14,10 +15,13 @@ namespace SK_DashScope.Sample.Controllers
     public class ApiController : ControllerBase
     {
         private readonly Kernel kernel;
+        private readonly ISemanticTextMemory memory;
+        const string CollectionName = "DashScopeMemoryStore";
 
-        public ApiController(Kernel kernel)
+        public ApiController(Kernel kernel, ISemanticTextMemory memory)
         {
             this.kernel = kernel;
+            this.memory = memory;
         }
 
         [HttpPost]
@@ -150,6 +154,50 @@ namespace SK_DashScope.Sample.Controllers
 
             return Ok(new { value, usage });
 
+        }
+
+        [HttpPost("save_memory")]
+        public async Task<string> SaveMemory([FromBody] UserInput input, CancellationToken cancellationToken)
+        {
+            if (string.IsNullOrWhiteSpace(input.Text))
+            {
+                return string.Empty;
+            }
+            var id = Guid.NewGuid().ToString("N");
+
+            return await memory.SaveInformationAsync(CollectionName, input.Text, id, cancellationToken: cancellationToken);
+        }
+
+        [HttpPost("get_memory")]
+        public async Task<MemoryQueryResult?> GetMemory([FromBody] UserInput input, CancellationToken cancellationToken)
+        {
+            if (string.IsNullOrWhiteSpace(input.Text))
+            {
+                return null;
+            }
+
+            var id = input.Text;
+            return await memory.GetAsync(CollectionName, id, true, cancellationToken: cancellationToken);
+        }
+
+        [HttpPost("query_memory")]
+        public async Task<IEnumerable<MemoryQueryResult>> QueryMemory([FromBody] UserInput input, CancellationToken cancellationToken)
+        {
+            if (string.IsNullOrWhiteSpace(input.Text))
+            {
+                return Array.Empty<MemoryQueryResult>();
+            }
+
+            var query = input.Text;
+            var records = memory.SearchAsync(CollectionName, query, 10, 0, true, cancellationToken: cancellationToken);
+
+            var results = new List<MemoryQueryResult>();
+            await foreach (var record in records)
+            {
+                results.Add(record);
+            }
+
+            return results;
         }
     }
 }

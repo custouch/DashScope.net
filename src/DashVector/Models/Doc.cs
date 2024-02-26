@@ -21,7 +21,7 @@ namespace DashVector.Models
         /// vector data
         /// </summary>
         [JsonPropertyName("vector")]
-        public List<float> Vector { get; set; }
+        public float[] Vector { get; set; } = [];
 
         /// <summary>
         /// sparse vector data

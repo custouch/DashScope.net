@@ -45,7 +45,7 @@ namespace DashVector.Models
         /// Fields, value: Float/Bool/INT/String
         /// </summary>
         [JsonPropertyName("fields_schema")]
-        public Dictionary<string, FieldType> FiledSchema { get; set; }
+        public Dictionary<string, FieldType> FiledSchema { get; set; } = [];
 
         /// <summary>
         /// PartitionName information
