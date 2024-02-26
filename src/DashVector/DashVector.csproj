@@ -1,8 +1,9 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
+    <UserSecretsId>e49d7ca5-270c-4339-8bc1-f8c4fe66a275</UserSecretsId>
   </PropertyGroup>
 
 	<ItemGroup>

@@ -1,3 +1,5 @@
+using DashVector;
+using DashVector.SemanticKernel;
 using Microsoft.SemanticKernel;
 using Microsoft.SemanticKernel.Memory;
 
@@ -23,6 +25,15 @@ builder.Services.AddScoped(svc =>
 {
     return new MemoryBuilder()
     .WithDashScopeTextEmbeddingGenerationService(builder.Configuration["DashScope:ApiKey"]!)
+    .WithMemoryStore(factory =>
+    {
+        var dashVectorClient = new DashVectorClient(builder.Configuration["DashVector:ApiKey"]!,
+            builder.Configuration["DashVector:Endpoint"]!);
+        return new DashVectorMemoryStore(dashVectorClient, new DashVectorCollectionOptions()
+        {
+            Dimension = 1536
+        });
+    })
     .Build();
 });
 

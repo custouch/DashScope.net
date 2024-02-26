@@ -17,6 +17,7 @@
 
 	<ItemGroup>
 		<ProjectReference Include="..\..\src\DashScope.SemanticKernel\DashScope.SemanticKernel.csproj" />
+		<ProjectReference Include="..\..\src\DashVector.SemanticKernel\DashVector.SemanticKernel.csproj" />
 	</ItemGroup>
 
 </Project>
