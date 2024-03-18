@@ -6,16 +6,16 @@
     <!--Unit Test-->
     <PackageVersion Include="Microsoft.Extensions.Configuration" Version="8.0.0" />
     <PackageVersion Include="Microsoft.Extensions.Configuration.UserSecrets" Version="8.0.0" />
-    <PackageVersion Include="Microsoft.KernelMemory.Abstractions" Version="0.28.240212.1" />
-    <PackageVersion Include="Microsoft.KernelMemory.Core" Version="0.28.240212.1" />
+    <PackageVersion Include="Microsoft.KernelMemory.Abstractions" Version="0.34.240313.1" />
+    <PackageVersion Include="Microsoft.KernelMemory.Core" Version="0.34.240313.1" />
     <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="17.9.0" />
-    <PackageVersion Include="Microsoft.SemanticKernel" Version="1.4.0" />
-    <PackageVersion Include="Microsoft.SemanticKernel.Abstractions" Version="1.4.0" />
+    <PackageVersion Include="Microsoft.SemanticKernel" Version="1.6.2" />
+    <PackageVersion Include="Microsoft.SemanticKernel.Abstractions" Version="1.6.2" />
     <PackageVersion Include="Microsoft.VisualStudio.Validation" Version="17.8.8" />
     <PackageVersion Include="Swashbuckle.AspNetCore" Version="6.5.0" />
-    <PackageVersion Include="System.Text.Json" Version="8.0.1" />
+    <PackageVersion Include="System.Text.Json" Version="8.0.3" />
     <PackageVersion Include="xunit" Version="2.7.0" />
     <PackageVersion Include="xunit.runner.visualstudio" Version="2.5.7" />
-    <PackageVersion Include="coverlet.collector" Version="6.0.0" />
+    <PackageVersion Include="coverlet.collector" Version="6.0.2" />
   </ItemGroup>
 </Project>
