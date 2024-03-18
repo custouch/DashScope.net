@@ -131,7 +131,9 @@ namespace DashScope
             request.RequestUri = new Uri(endpoint ?? Defaults.GetApiEndpoint());
             request.Method = HttpMethod.Post;
 
-            var response = await _client.SendAsync(request, cancellationToken);
+            var response =
+                isStream ? await _client.SendAsync(request, HttpCompletionOption.ResponseHeadersRead, cancellationToken)
+                         : await _client.SendAsync(request, cancellationToken);
 
             return response;
         }
