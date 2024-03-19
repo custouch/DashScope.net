@@ -14,13 +14,13 @@ var memory = new KernelMemoryBuilder()
                 .WithDefaultDashScopes(client)
                 .Build();
 
-await memory.ImportDocumentAsync("sample-SK-Readme.pdf");
+await memory.ImportDocumentAsync("sample-SK-Readme.pdf").ConfigureAwait(false);
 
 var question = "What's Semantic Kernel?";
 
 Console.WriteLine($"\n\nQuestion: {question}");
 
-var answer = await memory.AskAsync(question);
+var answer = await memory.AskAsync(question).ConfigureAwait(false);
 
 Console.WriteLine($"\nAnswer: {answer.Result}");
 

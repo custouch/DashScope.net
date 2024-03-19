@@ -14,6 +14,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DashScope", "src\DashScope\
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{1A9F0379-EA06-42DE-B7AE-A86A4EF44616}"
 	ProjectSection(SolutionItems) = preProject
+		src\.editorconfig = src\.editorconfig
 		Directory.Build.props = Directory.Build.props
 		Directory.Packages.props = Directory.Packages.props
 		.github\workflows\nuget-build.yml = .github\workflows\nuget-build.yml
@@ -39,7 +40,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DashVector.UnitTests", "tes
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DashVector.Sample", "samples\DashVector.Sample\DashVector.Sample.csproj", "{0B09CBA0-491C-49B5-A498-940AEB7210DF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DashVector.SemanticKernel", "src\DashVector.SemanticKernel\DashVector.SemanticKernel.csproj", "{648ABFAD-C62C-4D58-B968-91F6BEF0831D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DashVector.SemanticKernel", "src\DashVector.SemanticKernel\DashVector.SemanticKernel.csproj", "{648ABFAD-C62C-4D58-B968-91F6BEF0831D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

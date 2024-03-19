@@ -37,7 +37,7 @@ namespace DashScope.KernelMemory
                        {
                             Texts = [text]
                        }
-                   }, cancellationToken);
+                   }, cancellationToken).ConfigureAwait(false);
             return new Embedding(embeddings.Output.Embeddings[0].Embedding.Select(e => (float)e).ToArray());
         }
 

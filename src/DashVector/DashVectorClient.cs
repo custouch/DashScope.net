@@ -39,9 +39,9 @@ namespace DashVector
         {
             var apiEndpoint = Defaults.GetApiEndpoint(_endPoint);
 
-            var response = await RequestAsync(HttpMethod.Post, apiEndpoint, request, cancellationToken);
+            var response = await RequestAsync(HttpMethod.Post, apiEndpoint, request, cancellationToken).ConfigureAwait(false);
 
-            return await HandleResponseAsync<ResponseBase>(response);
+            return await HandleResponseAsync<ResponseBase>(response).ConfigureAwait(false);
 
         }
 
@@ -55,9 +55,9 @@ namespace DashVector
         {
             var apiEndPoint = Defaults.GetApiEndpoint(endpoint: _endPoint, collectionName: name);
 
-            var response = await RequestAsync(HttpMethod.Get, apiEndPoint, cancellationToken);
+            var response = await RequestAsync(HttpMethod.Get, apiEndPoint, cancellationToken).ConfigureAwait(false);
 
-            return await HandleResponseAsync<ResponseBase<CollectionMeta>>(response);
+            return await HandleResponseAsync<ResponseBase<CollectionMeta>>(response).ConfigureAwait(false);
 
         }
 
@@ -69,9 +69,9 @@ namespace DashVector
         {
             var apiEndpoint = Defaults.GetApiEndpoint(_endPoint);
 
-            var response = await RequestAsync(HttpMethod.Get, apiEndpoint, cancellationToken);
+            var response = await RequestAsync(HttpMethod.Get, apiEndpoint, cancellationToken).ConfigureAwait(false);
 
-            return await HandleResponseAsync<ResponseBase<List<string>>>(response);
+            return await HandleResponseAsync<ResponseBase<List<string>>>(response).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -85,9 +85,9 @@ namespace DashVector
             List<string> functionNames = [FunctionNames.Stats];
             var apiEndPoint = Defaults.GetApiEndpoint(_endPoint, collectionName: name, functionNames: functionNames);
 
-            var response = await RequestAsync(HttpMethod.Get, apiEndPoint, cancellationToken);
+            var response = await RequestAsync(HttpMethod.Get, apiEndPoint, cancellationToken).ConfigureAwait(false);
 
-            return await HandleResponseAsync<ResponseBase<CollectionStats>>(response);
+            return await HandleResponseAsync<ResponseBase<CollectionStats>>(response).ConfigureAwait(false);
 
         }
 
@@ -100,9 +100,9 @@ namespace DashVector
         {
             var apiEndpoint = Defaults.GetApiEndpoint(_endPoint, collectionName: name);
 
-            var response = await RequestAsync(HttpMethod.Delete, apiEndpoint, cancellationToken);
+            var response = await RequestAsync(HttpMethod.Delete, apiEndpoint, cancellationToken).ConfigureAwait(false);
 
-            return await HandleResponseAsync<ResponseBase>(response);
+            return await HandleResponseAsync<ResponseBase>(response).ConfigureAwait(false);
         }
 
         #endregion
@@ -122,9 +122,9 @@ namespace DashVector
 
             var apiEndpoint = Defaults.GetApiEndpoint(endpoint: _endPoint, collectionName: collectionName, functionNames: functionNames);
 
-            var response = await RequestAsync(HttpMethod.Delete, apiEndpoint, deleteDocRequest, cancellationToken);
+            var response = await RequestAsync(HttpMethod.Delete, apiEndpoint, deleteDocRequest, cancellationToken).ConfigureAwait(false);
 
-            return await HandleResponseAsync<ResponseBase>(response);
+            return await HandleResponseAsync<ResponseBase>(response).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -149,9 +149,9 @@ namespace DashVector
 
             var apiEndpoint = Defaults.GetApiEndpoint(endpoint: _endPoint, collectionName: collectionName, functionNames: functionNames, query: query);
 
-            var response = await RequestAsync(HttpMethod.Get, apiEndpoint, cancellationToken);
+            var response = await RequestAsync(HttpMethod.Get, apiEndpoint, cancellationToken).ConfigureAwait(false);
 
-            return await HandleResponseAsync<ResponseBase<Dictionary<string, Doc>>>(response);
+            return await HandleResponseAsync<ResponseBase<Dictionary<string, Doc>>>(response).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -166,9 +166,9 @@ namespace DashVector
             List<string> functionNames = [FunctionNames.Docs];
             var apiEndpoint = Defaults.GetApiEndpoint(endpoint: _endPoint, collectionName: collectionName, functionNames: functionNames);
 
-            var response = await RequestAsync(HttpMethod.Post, apiEndpoint, request, cancellationToken);
+            var response = await RequestAsync(HttpMethod.Post, apiEndpoint, request, cancellationToken).ConfigureAwait(false);
 
-            return await HandleResponseAsync<ResponseBase>(response);
+            return await HandleResponseAsync<ResponseBase>(response).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -183,9 +183,9 @@ namespace DashVector
             List<string> functionNames = [FunctionNames.Query];
             var apiEndpoint = Defaults.GetApiEndpoint(endpoint: _endPoint, collectionName: collectionName, functionNames: functionNames);
 
-            var response = await RequestAsync(HttpMethod.Post, apiEndpoint, queryDocRequest, cancellationToken);
+            var response = await RequestAsync(HttpMethod.Post, apiEndpoint, queryDocRequest, cancellationToken).ConfigureAwait(false);
 
-            return await HandleResponseAsync<ResponseBase<List<Doc>>>(response);
+            return await HandleResponseAsync<ResponseBase<List<Doc>>>(response).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -200,9 +200,9 @@ namespace DashVector
             List<string> functionNames = [FunctionNames.Docs];
             var apiEndpoint = Defaults.GetApiEndpoint(endpoint: _endPoint, collectionName: collectionName, functionNames: functionNames);
 
-            var response = await RequestAsync(HttpMethod.Put, apiEndpoint, updateDocRequest, cancellationToken);
+            var response = await RequestAsync(HttpMethod.Put, apiEndpoint, updateDocRequest, cancellationToken).ConfigureAwait(false);
 
-            return await HandleResponseAsync<ResponseBase>(response);
+            return await HandleResponseAsync<ResponseBase>(response).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -218,9 +218,9 @@ namespace DashVector
 
             var apiEndpoint = Defaults.GetApiEndpoint(endpoint: _endPoint, collectionName: collectionName, functionNames: functionNames);
 
-            var response = await RequestAsync(HttpMethod.Post, apiEndpoint, updateDocRequest, cancellationToken);
+            var response = await RequestAsync(HttpMethod.Post, apiEndpoint, updateDocRequest, cancellationToken).ConfigureAwait(false);
 
-            return await HandleResponseAsync<ResponseBase>(response);
+            return await HandleResponseAsync<ResponseBase>(response).ConfigureAwait(false);
         }
 
         #endregion
@@ -240,9 +240,9 @@ namespace DashVector
 
             var apiEndpoint = Defaults.GetApiEndpoint(endpoint: _endPoint, collectionName: collectionName, functionNames: functionName);
 
-            var response = await RequestAsync(HttpMethod.Post, apiEndpoint, request, cancellationToken);
+            var response = await RequestAsync(HttpMethod.Post, apiEndpoint, request, cancellationToken).ConfigureAwait(false);
 
-            return await HandleResponseAsync<ResponseBase>(response);
+            return await HandleResponseAsync<ResponseBase>(response).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -258,9 +258,9 @@ namespace DashVector
 
             var apiEndpoint = Defaults.GetApiEndpoint(endpoint: _endPoint, collectionName: collectionName, functionNames: functionName);
 
-            var response = await RequestAsync(HttpMethod.Delete, apiEndpoint, cancellationToken);
+            var response = await RequestAsync(HttpMethod.Delete, apiEndpoint, cancellationToken).ConfigureAwait(false);
 
-            return await HandleResponseAsync<ResponseBase>(response);
+            return await HandleResponseAsync<ResponseBase>(response).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -275,9 +275,9 @@ namespace DashVector
             List<string> functionNames = [FunctionNames.Partitions, partitionName];
             var apiEndpoint = Defaults.GetApiEndpoint(endpoint: _endPoint, collectionName: collectionName, functionNames: functionNames);
 
-            var response = await RequestAsync(HttpMethod.Get, apiEndpoint, cancellationToken);
+            var response = await RequestAsync(HttpMethod.Get, apiEndpoint, cancellationToken).ConfigureAwait(false);
 
-            return await HandleResponseAsync<ResponseBase<string>>(response);
+            return await HandleResponseAsync<ResponseBase<string>>(response).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -291,9 +291,9 @@ namespace DashVector
             List<string> functionNames = [FunctionNames.Partitions];
             var apiEndpoint = Defaults.GetApiEndpoint(endpoint: _endPoint, collectionName: collectionName, functionNames: functionNames);
 
-            var response = await RequestAsync(HttpMethod.Get, apiEndpoint, apiEndpoint, cancellationTokenn);
+            var response = await RequestAsync(HttpMethod.Get, apiEndpoint, apiEndpoint, cancellationTokenn).ConfigureAwait(false);
 
-            return await HandleResponseAsync<ResponseBase<List<string>>>(response);
+            return await HandleResponseAsync<ResponseBase<List<string>>>(response).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -308,16 +308,16 @@ namespace DashVector
             List<string> functionNames = [FunctionNames.Partitions, partitionName, FunctionNames.Stats];
             var apiEndpoint = Defaults.GetApiEndpoint(endpoint: _endPoint, collectionName: collectionName, functionNames: functionNames);
 
-            var response = await RequestAsync(HttpMethod.Get, apiEndpoint, cancellationToken);
+            var response = await RequestAsync(HttpMethod.Get, apiEndpoint, cancellationToken).ConfigureAwait(false);
 
-            return await HandleResponseAsync<ResponseBase<PartitionStats>>(response);
+            return await HandleResponseAsync<ResponseBase<PartitionStats>>(response).ConfigureAwait(false);
         }
 
         #endregion
 
         private async Task<HttpResponseMessage> RequestAsync(HttpMethod method, string ApiEndPoint, CancellationToken cancellationToken = default)
         {
-            return await RequestAsync<object>(method, ApiEndPoint, null, cancellationToken);
+            return await RequestAsync<object>(method, ApiEndPoint, null, cancellationToken).ConfigureAwait(false);
         }
 
         private async Task<HttpResponseMessage> RequestAsync<TRequest>(HttpMethod method, string ApiEndPoint, TRequest? requestBody = null, CancellationToken cancellationToken = default)
@@ -333,7 +333,7 @@ namespace DashVector
                 request.Content = new StringContent(JsonSerializer.Serialize(requestBody), Encoding.UTF8, "application/json");
             }
 
-            var response = await _client.SendAsync(request, cancellationToken);
+            var response = await _client.SendAsync(request, cancellationToken).ConfigureAwait(false);
 
             return response;
         }
@@ -342,7 +342,7 @@ namespace DashVector
         {
             try
             {
-                var content = await response.Content.ReadAsStringAsync();
+                var content = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
 
                 response.EnsureSuccessStatusCode();
 

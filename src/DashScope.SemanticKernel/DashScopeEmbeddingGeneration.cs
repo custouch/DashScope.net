@@ -32,7 +32,7 @@ public class DashScopeEmbeddingGeneration : ITextEmbeddingGenerationService
                     {
                         Texts = data.ToArray<string>()
                     }
-                }, cancellationToken);
+                }, cancellationToken).ConfigureAwait(false);
 
             return embeddings.Output.Embeddings.Select(d => new ReadOnlyMemory<float>(d.Embedding.Select(e => (float)e).ToArray())).ToList();
         }
