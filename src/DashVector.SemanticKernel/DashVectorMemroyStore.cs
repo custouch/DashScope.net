@@ -71,13 +71,13 @@ namespace DashVector.SemanticKernel
                 Metric = options.Metric,
                 ExtraParams = options.ExtraParams,
                 FieldsSchema = FieldsSchema,
-            }, cancellationToken);
+            }, cancellationToken).ConfigureAwait(false);
         }
 
         /// <inheritdoc/>
         public async Task DeleteCollectionAsync(string collectionName, CancellationToken cancellationToken = default)
         {
-            await client.DeleteCollectionAsync(collectionName, cancellationToken);
+            await client.DeleteCollectionAsync(collectionName, cancellationToken).ConfigureAwait(false);
         }
 
         /// <inheritdoc/>
@@ -85,7 +85,7 @@ namespace DashVector.SemanticKernel
         {
             try
             {
-                var result = await client.DescribeCollectionAsync(collectionName, cancellationToken);
+                var result = await client.DescribeCollectionAsync(collectionName, cancellationToken).ConfigureAwait(false);
 
                 return result.OutPut?.Status == CollectionStatus.SERVING;
             }
@@ -99,7 +99,7 @@ namespace DashVector.SemanticKernel
             var results = await client.FetchDocAsync(new Models.Requests.FetchDocRequest()
             {
                 Ids = [key]
-            }, collectionName, cancellationToken);
+            }, collectionName, cancellationToken).ConfigureAwait(false);
 
             if (results.Code == 0 && results.OutPut?.Count == 1)
             {
@@ -117,7 +117,7 @@ namespace DashVector.SemanticKernel
             var results = await client.FetchDocAsync(new Models.Requests.FetchDocRequest()
             {
                 Ids = keys.ToList()
-            }, collectionName, cancellationToken);
+            }, collectionName, cancellationToken).ConfigureAwait(false);
 
             if (results.OutPut != null)
             {
@@ -133,7 +133,7 @@ namespace DashVector.SemanticKernel
         /// <inheritdoc/>
         public async IAsyncEnumerable<string> GetCollectionsAsync([EnumeratorCancellation] CancellationToken cancellationToken = default)
         {
-            var collections = await client.GetCollectionListAsync(cancellationToken);
+            var collections = await client.GetCollectionListAsync(cancellationToken).ConfigureAwait(false);
 
             if (collections.OutPut != null)
             {
@@ -152,7 +152,7 @@ namespace DashVector.SemanticKernel
                 IncludeVector = withEmbedding,
                 Vector = embedding.ToArray(),
                 TopK = 1,
-            }, collectionName, cancellationToken);
+            }, collectionName, cancellationToken).ConfigureAwait(false);
 
             if (result.OutPut?.Count != 1)
             {
@@ -180,7 +180,7 @@ namespace DashVector.SemanticKernel
                 IncludeVector = withEmbeddings,
                 Vector = embedding.ToArray(),
                 TopK = limit,
-            }, collectionName, cancellationToken);
+            }, collectionName, cancellationToken).ConfigureAwait(false);
 
             if (results.OutPut?.Count > 0)
             {
@@ -204,7 +204,7 @@ namespace DashVector.SemanticKernel
             await client.DeleteDocAsync(new Models.Requests.DeleteDocRequest()
             {
                 Ids = [key]
-            }, collectionName, cancellationToken);
+            }, collectionName, cancellationToken).ConfigureAwait(false);
         }
 
         /// <inheritdoc/>
@@ -213,7 +213,7 @@ namespace DashVector.SemanticKernel
             await client.DeleteDocAsync(new Models.Requests.DeleteDocRequest()
             {
                 Ids = keys.ToList()
-            }, collectionName, cancellationToken);
+            }, collectionName, cancellationToken).ConfigureAwait(false);
         }
 
         /// <inheritdoc/>
@@ -230,7 +230,7 @@ namespace DashVector.SemanticKernel
                          Vector = record.Embedding.ToArray()
                      }
                 ]
-            }, collectionName, cancellationToken);
+            }, collectionName, cancellationToken).ConfigureAwait(false);
             return id;
         }
 
@@ -254,7 +254,7 @@ namespace DashVector.SemanticKernel
             await client.UpsertDocAsync(new Models.Requests.UpsertDocRequest()
             {
                 Docs = docs,
-            }, collectionName, cancellationToken);
+            }, collectionName, cancellationToken).ConfigureAwait(false);
             foreach (var doc in docs)
             {
                 yield return doc.Id;

@@ -30,9 +30,9 @@ namespace DashScope
 
         public async Task<CompletionResponse> GenerationAsync(CompletionRequest request, CancellationToken cancellationToken = default)
         {
-            var response = await RequestAsync(request, cancellationToken: cancellationToken);
+            var response = await RequestAsync(request, cancellationToken: cancellationToken).ConfigureAwait(false);
 
-            var content = await response.Content.ReadAsStringAsync();
+            var content = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
 
             var result = JsonSerializer.Deserialize<CompletionResponse>(content) ?? throw new DashScopeException("Not found Content");
 
@@ -48,16 +48,16 @@ namespace DashScope
 
         public async IAsyncEnumerable<CompletionResponse> GenerationStreamAsync(CompletionRequest request, [EnumeratorCancellation] CancellationToken cancellationToken = default)
         {
-            var response = await RequestAsync(request, true, cancellationToken: cancellationToken);
+            var response = await RequestAsync(request, true, cancellationToken: cancellationToken).ConfigureAwait(false);
 
-            await using var stream = await response.Content.ReadAsStreamAsync();
+            await using var stream = await response.Content.ReadAsStreamAsync().ConfigureAwait(false);
             using var reader = new StreamReader(stream);
 
             while (!reader.EndOfStream)
             {
                 cancellationToken.ThrowIfCancellationRequested();
 
-                var line = await reader.ReadLineAsync();
+                var line = await reader.ReadLineAsync().ConfigureAwait(false);
 
                 if (line.StartsWith("data:"))
                 {
@@ -83,9 +83,9 @@ namespace DashScope
         public async Task<EmbeddingResponse> TextEmbeddingAsync(EmbeddingRequest request, CancellationToken cancellationToken = default)
         {
             var endpoint = Defaults.GetApiEndpoint(taskGroup: "embeddings", task: "text-embedding", functionCall: "text-embedding");
-            var response = await RequestAsync(request, endpoint: endpoint, cancellationToken: cancellationToken);
+            var response = await RequestAsync(request, endpoint: endpoint, cancellationToken: cancellationToken).ConfigureAwait(false);
 
-            var content = await response.Content.ReadAsStringAsync();
+            var content = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
 
             var result = JsonSerializer.Deserialize<EmbeddingResponse>(content) ?? throw new DashScopeException("Not found Content");
 
@@ -133,7 +133,7 @@ namespace DashScope
 
             var response =
                 isStream ? await _client.SendAsync(request, HttpCompletionOption.ResponseHeadersRead, cancellationToken)
-                         : await _client.SendAsync(request, cancellationToken);
+.ConfigureAwait(false) : await _client.SendAsync(request, cancellationToken).ConfigureAwait(false);
 
             return response;
         }
@@ -146,8 +146,8 @@ namespace DashScope
             request.RequestUri = new Uri(Defaults.GetTokenizerEndpoint());
             request.Method = HttpMethod.Post;
 
-            var response = await _client.SendAsync(request, cancellationToken);
-            var content = await response.Content.ReadAsStringAsync();
+            var response = await _client.SendAsync(request, cancellationToken).ConfigureAwait(false);
+            var content = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
 
             var result = JsonSerializer.Deserialize<TokenizerResponse>(content) ?? throw new DashScopeException("Not found Content");
 

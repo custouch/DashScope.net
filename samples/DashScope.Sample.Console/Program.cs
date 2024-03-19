@@ -37,7 +37,7 @@ while (true)
                   }
              }
         }
-    });
+    }).ConfigureAwait(false);
 
     if (result.IsTextResponse)
     {

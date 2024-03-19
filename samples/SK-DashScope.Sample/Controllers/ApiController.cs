@@ -36,7 +36,7 @@ namespace SK_DashScope.Sample.Controllers
             var history = new ChatHistory();
             history.AddUserMessage(input.Text);
 
-            var result = await chat.GetChatMessageContentAsync(history);
+            var result = await chat.GetChatMessageContentAsync(history).ConfigureAwait(false);
             return Ok(result.Content);
         }
 
@@ -57,7 +57,7 @@ namespace SK_DashScope.Sample.Controllers
                     { "top_p", 0.8 }
                 }
             };
-            var result = await completion.GetTextContentAsync(input.Text, settings, cancellationToken: cancellationToken);
+            var result = await completion.GetTextContentAsync(input.Text, settings, cancellationToken: cancellationToken).ConfigureAwait(false);
 
             var text = result.Text;
             return Ok(text);
@@ -68,7 +68,7 @@ namespace SK_DashScope.Sample.Controllers
         {
             if (string.IsNullOrWhiteSpace(input.Text))
             {
-                await Response.CompleteAsync();
+                await Response.CompleteAsync().ConfigureAwait(false);
             }
 
             var chat = kernel.GetRequiredService<IChatCompletionService>();
@@ -80,11 +80,11 @@ namespace SK_DashScope.Sample.Controllers
 
             await foreach (var result in results)
             {
-                await Response.WriteAsync("data: " + result + "\n\n", Encoding.UTF8);
-                await Response.Body.FlushAsync();
+                await Response.WriteAsync("data: " + result + "\n\n", Encoding.UTF8).ConfigureAwait(false);
+                await Response.Body.FlushAsync().ConfigureAwait(false);
             }
 
-            await Response.CompleteAsync();
+            await Response.CompleteAsync().ConfigureAwait(false);
         }
 
         [HttpPost("text_with_settings")]
@@ -104,7 +104,7 @@ namespace SK_DashScope.Sample.Controllers
                 Temperature = 0.5f,
                 EnableSearch = true,
             };
-            var result = await completion.GetTextContentsAsync(input.Text, settings, null, cancellationToken);
+            var result = await completion.GetTextContentsAsync(input.Text, settings, null, cancellationToken).ConfigureAwait(false);
 
             var text = result[0].Text;
             return Ok(text);
@@ -115,7 +115,7 @@ namespace SK_DashScope.Sample.Controllers
         {
             if (string.IsNullOrWhiteSpace(input.Text))
             {
-                await Response.CompleteAsync();
+                await Response.CompleteAsync().ConfigureAwait(false);
             }
 
             var completion = kernel.GetRequiredService<ITextGenerationService>();
@@ -125,11 +125,11 @@ namespace SK_DashScope.Sample.Controllers
 
             await foreach (var streamingResult in streamingResults)
             {
-                await Response.WriteAsync("data: " + streamingResult + "\n\n", Encoding.UTF8, cancellationToken);
-                await Response.Body.FlushAsync(cancellationToken);
+                await Response.WriteAsync("data: " + streamingResult + "\n\n", Encoding.UTF8, cancellationToken).ConfigureAwait(false);
+                await Response.Body.FlushAsync(cancellationToken).ConfigureAwait(false);
             }
 
-            await Response.CompleteAsync();
+            await Response.CompleteAsync().ConfigureAwait(false);
         }
 
         [HttpPost("semantic")]
@@ -148,7 +148,7 @@ namespace SK_DashScope.Sample.Controllers
                 {{$input}}
 
                 """;
-            var result = await kernel.InvokePromptAsync(prompt, new KernelArguments() { ["input"] = input.Text }, cancellationToken: cancellationToken);
+            var result = await kernel.InvokePromptAsync(prompt, new KernelArguments() { ["input"] = input.Text }, cancellationToken: cancellationToken).ConfigureAwait(false);
             var value = result.GetValue<string>();
             var usage = result.Metadata?["Usage"];
 
@@ -157,7 +157,7 @@ namespace SK_DashScope.Sample.Controllers
         }
 
         [HttpPost("save_memory")]
-        public async Task<string> SaveMemory([FromBody] UserInput input, CancellationToken cancellationToken)
+        public async Task<string> SaveMemoryAsync([FromBody] UserInput input, CancellationToken cancellationToken)
         {
             if (string.IsNullOrWhiteSpace(input.Text))
             {
@@ -165,11 +165,11 @@ namespace SK_DashScope.Sample.Controllers
             }
             var id = Guid.NewGuid().ToString("N");
 
-            return await memory.SaveInformationAsync(CollectionName, input.Text, id, cancellationToken: cancellationToken);
+            return await memory.SaveInformationAsync(CollectionName, input.Text, id, cancellationToken: cancellationToken).ConfigureAwait(false);
         }
 
         [HttpPost("get_memory")]
-        public async Task<MemoryQueryResult?> GetMemory([FromBody] UserInput input, CancellationToken cancellationToken)
+        public async Task<MemoryQueryResult?> GetMemoryAsync([FromBody] UserInput input, CancellationToken cancellationToken)
         {
             if (string.IsNullOrWhiteSpace(input.Text))
             {
@@ -177,11 +177,11 @@ namespace SK_DashScope.Sample.Controllers
             }
 
             var id = input.Text;
-            return await memory.GetAsync(CollectionName, id, true, cancellationToken: cancellationToken);
+            return await memory.GetAsync(CollectionName, id, true, cancellationToken: cancellationToken).ConfigureAwait(false);
         }
 
         [HttpPost("query_memory")]
-        public async Task<IEnumerable<MemoryQueryResult>> QueryMemory([FromBody] UserInput input, CancellationToken cancellationToken)
+        public async Task<IEnumerable<MemoryQueryResult>> QueryMemoryAsync([FromBody] UserInput input, CancellationToken cancellationToken)
         {
             if (string.IsNullOrWhiteSpace(input.Text))
             {
