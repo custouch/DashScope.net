@@ -64,7 +64,7 @@ namespace DashScope.KernelMemory
                 },
                 Model = _options.Model,
                 Parameters = MergeCompletionParameters(options, _options.DefaultCompletionParameters)
-            }, cancellationToken);
+            }, cancellationToken).ConfigureAwait(false);
 
             await foreach (var result in streamResult)
             {

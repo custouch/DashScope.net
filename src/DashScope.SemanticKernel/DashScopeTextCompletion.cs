@@ -64,7 +64,7 @@ namespace DashScope.SemanticKernel
                 },
                 Parameters = ToParameters(settings, true),
                 Model = this._model
-            }, cancellationToken);
+            }, cancellationToken).ConfigureAwait(false);
             await foreach (var response in responses)
             {
                 var metadata = GetResponseMetadata(response);
@@ -117,7 +117,7 @@ namespace DashScope.SemanticKernel
                 },
                 Parameters = ToParameters(settings, true),
                 Model = this._model
-            }, cancellationToken);
+            }, cancellationToken).ConfigureAwait(false);
             await foreach (var response in responses)
             {
                 var metadata = GetResponseMetadata(response);
