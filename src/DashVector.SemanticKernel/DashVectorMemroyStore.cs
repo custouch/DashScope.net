@@ -160,7 +160,12 @@ namespace DashVector.SemanticKernel
             }
 
             var doc = result.OutPut[0];
-            if (doc.Score < minRelevanceScore)
+            var isScoreValid = options.Metric switch
+            {
+                CollectionInfo.Metric.Cosine or CollectionInfo.Metric.Euclidean => doc.Score <= minRelevanceScore,
+                _ => doc.Score >= minRelevanceScore,
+            };
+            if (!isScoreValid)
             {
                 return null;
             }
@@ -186,7 +191,13 @@ namespace DashVector.SemanticKernel
             {
                 foreach (var doc in results.OutPut)
                 {
-                    if (doc.Score < minRelevanceScore)
+                    var isScoreValid = options.Metric switch
+                    {
+                        CollectionInfo.Metric.Cosine or CollectionInfo.Metric.Euclidean => doc.Score <= minRelevanceScore,
+                        _ => doc.Score >= minRelevanceScore,
+                    };
+
+                    if (!isScoreValid)
                     {
                         break;
                     }
