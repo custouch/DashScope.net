@@ -101,6 +101,7 @@ namespace DashVector.SemanticKernel
                 var result = await client.DescribeCollectionAsync(collectionName, cancellationToken).ConfigureAwait(false);
 
                 isExist = result.OutPut?.Status == CollectionStatus.SERVING;
+                if (isExist) CollectionNames.Add(collectionName);
             }
             catch { }
             return isExist;
