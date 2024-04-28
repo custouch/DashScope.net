@@ -2,6 +2,7 @@
 using DashVector.Models;
 using Microsoft.SemanticKernel.Memory;
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using System.Text;
@@ -24,6 +25,11 @@ namespace DashVector.SemanticKernel
             [nameof(MemoryRecordMetadata.Text)] = FieldType.STRING,
             [nameof(MemoryRecordMetadata.AdditionalMetadata)] = FieldType.STRING,
         };
+
+        /// <summary>
+        /// List of collections that already exist
+        /// </summary>
+        static HashSet<string> CollectionNames = [];
 
         static MemoryRecordMetadata ToMetaData(Dictionary<string, FieldValue> fields)
         {
@@ -72,25 +78,32 @@ namespace DashVector.SemanticKernel
                 ExtraParams = options.ExtraParams,
                 FieldsSchema = FieldsSchema,
             }, cancellationToken).ConfigureAwait(false);
+            CollectionNames.Add(collectionName);
         }
 
         /// <inheritdoc/>
         public async Task DeleteCollectionAsync(string collectionName, CancellationToken cancellationToken = default)
         {
             await client.DeleteCollectionAsync(collectionName, cancellationToken).ConfigureAwait(false);
+            CollectionNames.Remove(collectionName);
         }
 
         /// <inheritdoc/>
         public async Task<bool> DoesCollectionExistAsync(string collectionName, CancellationToken cancellationToken = default)
         {
+            if (CollectionNames.Contains(collectionName))
+            {
+                return true;
+            }
+            var isExist = false;
             try
             {
                 var result = await client.DescribeCollectionAsync(collectionName, cancellationToken).ConfigureAwait(false);
 
-                return result.OutPut?.Status == CollectionStatus.SERVING;
+                isExist = result.OutPut?.Status == CollectionStatus.SERVING;
             }
             catch { }
-            return false;
+            return isExist;
         }
 
         /// <inheritdoc/>
@@ -139,6 +152,7 @@ namespace DashVector.SemanticKernel
             {
                 foreach (var collection in collections.OutPut)
                 {
+                    CollectionNames.Add(collection);
                     yield return collection;
                 }
             }
