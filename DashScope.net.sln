@@ -42,6 +42,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DashVector.Sample", "sample
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DashVector.SemanticKernel", "src\DashVector.SemanticKernel\DashVector.SemanticKernel.csproj", "{648ABFAD-C62C-4D58-B968-91F6BEF0831D}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DashVector.KernelMemory", "src\DashVector.KernelMemory\DashVector.KernelMemory.csproj", "{B1073E26-C155-46E5-897F-BFA9DFB963BC}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -92,6 +94,10 @@ Global
 		{648ABFAD-C62C-4D58-B968-91F6BEF0831D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{648ABFAD-C62C-4D58-B968-91F6BEF0831D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{648ABFAD-C62C-4D58-B968-91F6BEF0831D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B1073E26-C155-46E5-897F-BFA9DFB963BC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B1073E26-C155-46E5-897F-BFA9DFB963BC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B1073E26-C155-46E5-897F-BFA9DFB963BC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B1073E26-C155-46E5-897F-BFA9DFB963BC}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -108,6 +114,7 @@ Global
 		{FFF43DC0-8591-4817-ABEF-C11598BE6D24} = {ED489DAA-351A-43F9-A3DF-7DBEBF7677CD}
 		{0B09CBA0-491C-49B5-A498-940AEB7210DF} = {2FDFB5A9-FE06-4822-933E-5D1C6D9160C9}
 		{648ABFAD-C62C-4D58-B968-91F6BEF0831D} = {BB7B834A-464F-4F81-A649-E63AA0C53C24}
+		{B1073E26-C155-46E5-897F-BFA9DFB963BC} = {BB7B834A-464F-4F81-A649-E63AA0C53C24}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {4DB8E739-7470-4879-9DCE-E9BACBA58715}

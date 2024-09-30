@@ -75,6 +75,18 @@ namespace DashVector.Models
         public FieldValue(float value) => this.value = value;
         public FieldValue(bool value) => this.value = value;
 
+        public FieldValue(object value)
+        {
+            if (value is not string or int or float or bool)
+            {
+                throw new InvalidOperationException($"Cannot stored value type {value.GetType().FullName}");
+            }
+            else
+            {
+                this.value = value;
+            }
+        }
+
         public bool TryGetValue<T>(out T result)
         {
             if (value is T)
@@ -97,6 +109,8 @@ namespace DashVector.Models
             }
             throw new InvalidOperationException($"Cannot convert stored value to {typeof(T).Name}");
         }
+
+        public object RawValue => value;
 
         public static implicit operator FieldValue(string value) => new FieldValue(value);
         public static implicit operator FieldValue(int value) => new FieldValue(value);
