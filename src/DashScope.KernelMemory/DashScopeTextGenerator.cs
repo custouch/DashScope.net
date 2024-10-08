@@ -17,7 +17,6 @@ namespace DashScope.KernelMemory
     {
         private readonly DashScopeClient _client;
         private readonly DashScopeOptions _options;
-
         public DashScopeTextGenerator(DashScopeClient client, DashScopeOptions options)
         {
             this._client = client;
@@ -79,6 +78,12 @@ namespace DashScope.KernelMemory
             }
         }
 
+        /// <inheritdoc/>
+        public IReadOnlyList<string> GetTokens(string text)
+        {
+            return Array.Empty<string>();
+        }
+
         private CompletionParameters MergeCompletionParameters(TextGenerationOptions generationOptions, CompletionParameters? defaultCompletionParameters)
         {
             defaultCompletionParameters ??= new CompletionParameters();
@@ -88,9 +93,9 @@ namespace DashScope.KernelMemory
                 defaultCompletionParameters.Temperature = (float)generationOptions.Temperature;
             }
 
-            if (generationOptions.TopP != default)
+            if (generationOptions.PresencePenalty != default)
             {
-                defaultCompletionParameters.TopP = (float)generationOptions.TopP;
+                defaultCompletionParameters.TopP = (float)generationOptions.PresencePenalty;
             }
 
             defaultCompletionParameters.IncrementalOutput = true;

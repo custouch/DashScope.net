@@ -356,6 +356,10 @@ namespace DashVector
 
                 return result;
             }
+            catch (DashVectorException)
+            {
+                throw;
+            }
             catch (Exception ex)
             {
                 throw new DashVectorException(ex.Message);

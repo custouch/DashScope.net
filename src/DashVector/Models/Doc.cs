@@ -35,7 +35,7 @@ namespace DashVector.Models
         /// </summary>
         [JsonPropertyName("fields")]
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
-        public Dictionary<string, FieldValue>? Fields { get; set; }
+        public Dictionary<string, FieldValue> Fields { get; set; } = [];
 
         [JsonPropertyName("score")]
         public float Score { get; set; }

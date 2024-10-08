@@ -54,5 +54,10 @@ namespace DashScope.KernelMemory
                }
               }).ConfigureAwait(false).GetAwaiter().GetResult().InputTokens;
         }
+
+        public IReadOnlyList<string> GetTokens(string text)
+        {
+            return Array.Empty<string>();
+        }
     }
 }

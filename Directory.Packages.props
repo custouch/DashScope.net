@@ -6,8 +6,8 @@
     <!--Unit Test-->
     <PackageVersion Include="Microsoft.Extensions.Configuration" Version="8.0.0" />
     <PackageVersion Include="Microsoft.Extensions.Configuration.UserSecrets" Version="8.0.0" />
-    <PackageVersion Include="Microsoft.KernelMemory.Abstractions" Version="0.34.240313.1" />
-    <PackageVersion Include="Microsoft.KernelMemory.Core" Version="0.34.240313.1" />
+    <PackageVersion Include="Microsoft.KernelMemory.Abstractions" Version="0.78.241005.1" />
+    <PackageVersion Include="Microsoft.KernelMemory.Core" Version="0.78.241005.1" />
     <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="17.9.0" />
     <PackageVersion Include="Microsoft.SemanticKernel" Version="1.6.2" />
     <PackageVersion Include="Microsoft.SemanticKernel.Abstractions" Version="1.6.2" />
@@ -19,8 +19,8 @@
     <PackageVersion Include="coverlet.collector" Version="6.0.2" />
     <PackageVersion Include="Microsoft.VisualStudio.Threading.Analyzers" Version="17.9.28" />
     <PackageReference Include="Microsoft.VisualStudio.Threading.Analyzers">
-        <PrivateAssets>all</PrivateAssets>
-        <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
   </ItemGroup>
 </Project>

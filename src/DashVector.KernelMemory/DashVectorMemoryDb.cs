@@ -2,6 +2,8 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using DashVector;
@@ -13,6 +15,7 @@ public class DashVectorMemoryDb : IMemoryDb
 {
     private readonly DashVectorClient client;
     private readonly ITextEmbeddingGenerator textEmbedding;
+    const string id_field = "id";
 
     public DashVectorMemoryDb(DashVectorClient client, ITextEmbeddingGenerator textEmbedding)
     {
@@ -22,20 +25,41 @@ public class DashVectorMemoryDb : IMemoryDb
 
     public async Task CreateIndexAsync(string index, int vectorSize, CancellationToken cancellationToken = default)
     {
-        await this.client.CreateCollectionAsync(new DashVector.Models.Requests.CreateCollectionRequest()
+        try
         {
-            Name = index,
-            DataType = DashVector.Enums.DataType.FLOAT,
-            Dimension = vectorSize,
-        }, cancellationToken);
+            await this.client.DescribeCollectionAsync(index, cancellationToken);
+        }
+        catch (DashVectorException ex)
+        {
+            await this.client.CreateCollectionAsync(new DashVector.Models.Requests.CreateCollectionRequest()
+            {
+                Name = index,
+                DataType = DashVector.Enums.DataType.FLOAT,
+                Dimension = vectorSize,
+                FieldsSchema = new Dictionary<string, DashVector.Enums.FieldType>()
+                {
+                    { id_field, DashVector.Enums.FieldType.STRING }
+                }
+            }, cancellationToken);
+        }
+
+
     }
 
     public async Task DeleteAsync(string index, MemoryRecord record, CancellationToken cancellationToken = default)
     {
-        await this.client.DeleteDocAsync(new DashVector.Models.Requests.DeleteDocRequest()
+        var doc = await this.client.QueryDocAsync(new DashVector.Models.Requests.QueryDocRequest()
         {
-            Ids = [record.Id]
+            Filter = $"{id_field} = {record.Id}"
         }, index, cancellationToken);
+
+        if (doc.OutPut?.Count > 0)
+        {
+            await this.client.DeleteDocAsync(new DashVector.Models.Requests.DeleteDocRequest()
+            {
+                Ids = doc.OutPut.Select(_ => _.Id).ToList()
+            }, index, cancellationToken);
+        }
     }
 
     public async Task DeleteIndexAsync(string index, CancellationToken cancellationToken = default)
@@ -49,7 +73,7 @@ public class DashVectorMemoryDb : IMemoryDb
         return result?.OutPut;
     }
 
-    public async IAsyncEnumerable<MemoryRecord> GetListAsync(string index, ICollection<MemoryFilter>? filters = null, int limit = 1, bool withEmbeddings = false, CancellationToken cancellationToken = default)
+    public async IAsyncEnumerable<MemoryRecord> GetListAsync(string index, ICollection<MemoryFilter>? filters = null, int limit = 1, bool withEmbeddings = false,[EnumeratorCancellation] CancellationToken cancellationToken = default)
     {
         var results = await this.client.QueryDocAsync(new DashVector.Models.Requests.QueryDocRequest()
         {
@@ -59,18 +83,21 @@ public class DashVectorMemoryDb : IMemoryDb
 
         }, index, cancellationToken);
 
-        foreach (var result in results.OutPut)
+        if (results.OutPut != null)
         {
-            yield return new MemoryRecord()
+            foreach (var result in results.OutPut)
             {
-                Id = result.Id,
-                Vector = result.Vector,
-                Payload = result.Fields.ToDictionary(_ => _.Key, _ => _.Value.RawValue),
-            };
+                yield return new MemoryRecord()
+                {
+                    Id = result.Fields[id_field].GetValue<string>(),
+                    Vector = result.Vector,
+                    Payload = result.Fields.Where(_ => _.Value != null).ToDictionary(_ => _.Key, _ => _.Value.RawValue),
+                };
+            }
         }
     }
 
-    public async IAsyncEnumerable<(MemoryRecord, double)> GetSimilarListAsync(string index, string text, ICollection<MemoryFilter>? filters = null, double minRelevance = 0, int limit = 1, bool withEmbeddings = false, CancellationToken cancellationToken = default)
+    public async IAsyncEnumerable<(MemoryRecord, double)> GetSimilarListAsync(string index, string text, ICollection<MemoryFilter>? filters = null, double minRelevance = 0, int limit = 1, bool withEmbeddings = false,[EnumeratorCancellation] CancellationToken cancellationToken = default)
     {
         var embedding = await this.textEmbedding.GenerateEmbeddingAsync(text, cancellationToken);
         var results = await this.client.QueryDocAsync(new DashVector.Models.Requests.QueryDocRequest()
@@ -81,28 +108,33 @@ public class DashVectorMemoryDb : IMemoryDb
             Vector = embedding.Data.ToArray(),
         }, index, cancellationToken);
 
-        foreach (var result in results.OutPut)
+        if (results.OutPut != null)
         {
-            yield return (new MemoryRecord()
+            foreach (var result in results.OutPut)
             {
-                Id = result.Id,
-                Vector = result.Vector,
-                Payload = result.Fields.ToDictionary(_ => _.Key, _ => _.Value.RawValue),
-            }, result.Score);
+                if (result != null)
+                    yield return (new MemoryRecord()
+                    {
+                        Id = result.Fields[id_field].GetValue<string>(),
+                        Vector = result.Vector,
+                        Payload = result.Fields.Where(_ => _.Value != null).ToDictionary(_ => _.Key, _ => _.Value.RawValue),
+                    }, result.Score);
+            }
         }
     }
 
     public async Task<string> UpsertAsync(string index, MemoryRecord record, CancellationToken cancellationToken = default)
     {
+        var payload = record.Payload.ToDictionary(_ => _.Key, _ => new DashVector.Models.FieldValue(_.Value));
+        payload.Add("id", new DashVector.Models.FieldValue(record.Id));
         var result = await this.client.UpsertDocAsync(new DashVector.Models.Requests.UpsertDocRequest()
         {
             Docs = new List<DashVector.Models.Doc>()
             {
                 new DashVector.Models.Doc()
                 {
-                    Id = record.Id,
                     Vector = record.Vector.Data.ToArray(),
-                    Fields = record.Payload.ToDictionary(_=> _.Key , _=> new DashVector.Models.FieldValue(_.Value)),
+                    Fields = payload,
                 }
             }
         }, index, cancellationToken);
@@ -122,4 +154,5 @@ public class DashVectorMemoryDb : IMemoryDb
         }));
         return filter;
     }
+
 }
